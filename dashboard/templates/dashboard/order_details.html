@@ -88,8 +88,12 @@
           <div class="row justify-content-end">
             <div class="col-md-4">
               <div class="d-flex justify-content-between mb-2">
-                <span>Sous-total:</span>
-                <strong>{{ order.order_total|intcomma }} Ar</strong>
+                <span>Sous-total HT:</span>
+                <strong>{{ subtotal_ht|intcomma }} Ar</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>TVA (20%):</span>
+                <strong class="text-warning">{{ tva_amount|floatformat:2 }} Ar</strong>
               </div>
               {% if order.shipping_cost %}
               <div class="d-flex justify-content-between mb-2">
@@ -97,15 +101,9 @@
                 <strong>{{ order.shipping_cost|intcomma }} Ar</strong>
               </div>
               {% endif %}
-              {% if order.tax %}
-              <div class="d-flex justify-content-between mb-2">
-                <span>Taxe:</span>
-                <strong>{{ order.tax|intcomma }} Ar</strong>
-              </div>
-              {% endif %}
               <div class="border-top pt-2 d-flex justify-content-between">
-                <h6 class="mb-0">Total:</h6>
-                <h6 class="mb-0 text-primary">{{ order.order_total|intcomma }} Ar</h6>
+                <h6 class="mb-0">Total TTC:</h6>
+                <h6 class="mb-0 text-primary">{{ total_ttc|floatformat:2 }} Ar</h6>
               </div>
             </div>
           </div>

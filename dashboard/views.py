@@ -21,6 +21,9 @@ from django.template.loader import get_template
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
+from reportlab.platypus import Image as PlImage
+from django.conf import settings
+import os
 
 # --- FONCTIONS DE SÉCURITÉ ---
 def is_staff_member(user):
@@ -278,10 +281,24 @@ def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order).select_related('product')
     
+    # Calcul du sous-total HT
+    subtotal_ht = 0
+    for item in order_items:
+        item_total = item.sub_total()
+        subtotal_ht += float(item_total) if item_total else 0
+    
+    # Calcul de la TVA (20%)
+    tva_rate = 0.20
+    tva_amount = subtotal_ht * tva_rate
+    total_ttc = subtotal_ht + tva_amount
+    
     context = {
         'order': order,
         'order_items': order_items,
         'title': f'Détails de la Commande #{order.order_number}',
+        'subtotal_ht': subtotal_ht,
+        'tva_amount': tva_amount,
+        'total_ttc': total_ttc,
     }
     return render(request, 'dashboard/order_details.html', context)
 
@@ -327,14 +344,29 @@ def generate_invoice_pdf(request, order_number):
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4
 
-    # --- Header ---
+    # --- Header avec Logo ---
+    # Chemin vers le logo
+    logo_path = os.path.join(settings.STATIC_ROOT, 'img', 'Logo.png')
+    
+    # Si le fichier static n'existe pas, essayer le chemin statfiles
+    if not os.path.exists(logo_path):
+        logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'Logo.png')
+    
+    # Afficher le logo s'il existe
+    if os.path.exists(logo_path):
+        try:
+            p.drawImage(logo_path, 50, height - 70, width=60, height=60, preserveAspectRatio=True)
+        except Exception as e:
+            print(f"Erreur lors du chargement du logo: {e}")
+    
+    # Afficher le titre à droite du logo
     p.setFont("Helvetica-Bold", 20)
-    p.drawString(50, height - 50, "TSITSI STORE")
+    p.drawString(130, height - 50, "TSITSI STORE")
     
     p.setFont("Helvetica", 12)
-    p.drawString(50, height - 80, f"Facture N°: {order.order_number}")
-    p.drawString(50, height - 100, f"Date: {order.created.strftime('%d/%m/%Y')}")
-    p.drawString(50, height - 120, f"Client: {order.full_name()}")
+    p.drawString(130, height - 80, f"Facture N°: {order.order_number}")
+    p.drawString(130, height - 100, f"Date: {order.created.strftime('%d/%m/%Y')}")
+    p.drawString(130, height - 120, f"Client: {order.full_name()}")
 
     # --- Tableau des produits ---
     y = height - 160
@@ -375,16 +407,16 @@ def generate_invoice_pdf(request, order_number):
     p.line(50, y + 15, 550, y + 15)
     
     p.setFont("Helvetica", 11)
-    p.rightString(550, y, f"Sous-Total HT: {subtotal:,.2f} Ar")
+    p.drawRightString(550, y, f"Sous-Total HT: {subtotal:,.2f} Ar")
     
     y -= 20
     p.setFont("Helvetica-Bold", 11)
-    p.rightString(550, y, f"TVA (20%): {tva_amount:,.2f} Ar")
+    p.drawRightString(550, y, f"TVA (20%): {tva_amount:,.2f} Ar")
     
     y -= 25
     p.line(50, y + 15, 550, y + 15)
     p.setFont("Helvetica-Bold", 14)
-    p.rightString(550, y, f"TOTAL TTC: {total_ttc:,.2f} Ar")
+    p.drawRightString(550, y, f"TOTAL TTC: {total_ttc:,.2f} Ar")
     
     # --- Pied de Page (Infos Entreprise) ---
     footer_y = 50
