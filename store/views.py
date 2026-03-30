@@ -115,11 +115,14 @@ def product_detail_view(request, category_slug, product_slug):
     product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
     
     # 2. On récupère toute la famille via le group_id, en excluant le produit actuel
-    # On ne filtre PAS par is_available ici pour éviter que la liste disparaisse
-    variants = Product.objects.filter(
-        group_id=product.group_id
-    ).exclude(id=product.id).order_by('price') # Optionnel : trier par prix croissant
-    
+    # Si group_id est None ou vide, c'est un produit unique et il n'a pas de variantes.
+    if product.group_id:
+        variants = Product.objects.filter(
+            group_id=product.group_id
+        ).exclude(id=product.id).order_by('price') # Optionnel : trier par prix croissant
+    else:
+        variants = Product.objects.none()
+
     product_gallery = product.gallery.all()
     reviews = ReviewAndRating.objects.filter(product=product, is_active=True).order_by('-created_at')
     

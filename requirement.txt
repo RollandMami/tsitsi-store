@@ -60,7 +60,7 @@ rcssmin ; python_version < "3.9"
 
 # Si python est >= 3.9 install la version requis sinon install un par defqut
 reportlab==4.4.7 ; python_version >= "3.9"
-"reportlab<4.0" ; python_version < "3.9"
+reportlab ; python_version < "3.9"
 
 # Si python est >= 3.9 install la version requis sinon install un par defqut
 rjsmin==1.2.5 ; python_version >= "3.9"
