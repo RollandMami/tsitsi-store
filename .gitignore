@@ -37,3 +37,4 @@ ehthumbs.db
 
 # IDE (PyCharm)
 .idea/
+.vscode/
