@@ -2,31 +2,48 @@ from django import forms
 from .models import ReviewAndRating, ReviewImage
 
 class ReviewForm(forms.ModelForm):
-    
-    # 1. Définition du champ 'rating'
-    # Nous le définissons ici pour que Django sache qu'il doit le valider.
-    # Puisque nous gérons l'affichage des étoiles dans le template avec du JS/HTML, 
-    # nous n'avons pas besoin d'un widget visible ici.
+    # Utilisation de HiddenInput car le JS remplit la valeur
+    # On garde les limites strictes (1 à 7) pour la sécurité serveur
     rating = forms.IntegerField(
-        required=True, # Rendre la note obligatoire (à ajuster selon votre besoin)
-        min_value=1,     # Minimum 1 étoile
-        max_value=7      # Maximum 7 étoiles (selon votre système 1-7)
+        widget=forms.HiddenInput(), 
+        min_value=1, 
+        max_value=7,
+        error_messages={
+            'required': "Veuillez attribuer une note entre 1 et 7.",
+            'invalid': "La note doit être un nombre entier.",
+            'min_value': "La note minimale est de 1 étoile.",
+            'max_value': "La note maximale est de 7 étoiles.",
+        }
     )
     
     class Meta:
         model = ReviewAndRating
-        # 2. INCLURE 'rating' dans la liste des champs
         fields = ['rating', 'review'] 
         
         widgets = {
-            'review': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Votre avis détaillé...'}),
+            'review': forms.Textarea(attrs={
+                'class': 'form-control', 
+                'rows': 4, 
+                'placeholder': 'Racontez-nous votre expérience avec ce produit...',
+                'style': 'resize: none;' # Évite que l'utilisateur déforme ton UI
+            }),
         }
 
-# Formulaire pour uploader des images pour l'avis
+    # Validation personnalisée pour le texte (Optionnel mais recommandé)
+    def clean_review(self):
+        review = self.cleaned_data.get('review')
+        if len(review) < 10:
+            raise forms.ValidationError("Votre avis est trop court (minimum 10 caractères).")
+        return review
+
+# Formulaire pour les images multiples (si besoin d'un formset plus tard)
 class ReviewImageForm(forms.ModelForm):
     class Meta:
         model = ReviewImage
         fields = ['image']
         widgets = {
-            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*' # Filtre les fichiers dès l'explorateur Windows
+            }),
         }

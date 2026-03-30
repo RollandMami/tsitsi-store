@@ -2,304 +2,120 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facture #{{ order.order_number }}</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @page { size: A4; margin: 1cm; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; font-size: 12px; }
         
-        body {
-            font-family: 'Arial', sans-serif;
-            color: #333;
-            line-height: 1.6;
-            background: white;
-        }
+        /* Layout par table pour compatibilité PDF maximale */
+        .header-table, .client-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
         
-        .invoice-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px;
-            background: white;
-        }
+        .invoice-title { font-size: 28px; color: #0d6efd; font-weight: bold; }
+        .text-right { text-align: right; }
+        .text-blue { color: #0d6efd; }
         
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 3px solid #0d6efd;
-            padding-bottom: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .company-info h1 {
-            font-size: 32px;
-            color: #0d6efd;
-            margin-bottom: 5px;
-        }
-        
-        .company-info p {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .invoice-details {
-            text-align: right;
-        }
-        
-        .invoice-details p {
-            font-size: 14px;
-            margin: 5px 0;
-        }
-        
-        .invoice-details .label {
-            font-weight: bold;
-        }
-        
-        .invoice-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #0d6efd;
-            margin-bottom: 5px;
-        }
-        
-        .invoice-number {
-            font-size: 16px;
-            color: #666;
-        }
-        
-        /* Section Client et Adresse */
-        .invoice-body {
-            margin-bottom: 30px;
-        }
-        
-        .client-section {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-        
-        .client-section > div {
-            flex: 1;
-        }
-        
-        .client-section h6 {
-            font-size: 12px;
-            font-weight: bold;
-            color: #0d6efd;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-        }
-        
-        .client-section p {
-            font-size: 13px;
-            margin: 5px 0;
-        }
-        
-        /* Tableau d'articles */
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 13px;
-        }
-        
-        .items-table thead {
-            background-color: #f5f5f5;
-            border-bottom: 2px solid #0d6efd;
-        }
-        
-        .items-table th {
-            padding: 12px;
+        /* Table des articles */
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .items-table th { 
+            background-color: #f8f9fa; 
+            color: #0d6efd; 
+            padding: 10px; 
+            border-bottom: 2px solid #0d6efd; 
             text-align: left;
-            font-weight: bold;
-            color: #0d6efd;
             text-transform: uppercase;
-            font-size: 11px;
+            font-size: 10px;
         }
-        
-        .items-table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .items-table tr:last-child td {
-            border-bottom: 2px solid #0d6efd;
-        }
-        
-        .items-table .text-right {
-            text-align: right;
-        }
-        
-        .items-table .product-name {
-            font-weight: 500;
-        }
-        
+        .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+
         /* Totaux */
-        .invoice-totals {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 30px;
-        }
-        
-        .totals-table {
-            width: 100%;
-            max-width: 400px;
-            font-size: 13px;
-        }
-        
-        .totals-table tr td {
-            padding: 8px 0;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .totals-table tr.total-row td {
-            padding: 12px 0;
-            font-weight: bold;
-            font-size: 16px;
-            border-top: 2px solid #0d6efd;
-            border-bottom: 2px solid #0d6efd;
-            color: #0d6efd;
-        }
-        
-        .totals-table .label {
-            text-align: left;
-        }
-        
-        .totals-table .amount {
-            text-align: right;
-            font-weight: 500;
-        }
-        
-        /* Footer */
-        .invoice-footer {
-            border-top: 2px solid #ddd;
-            padding-top: 20px;
-            margin-top: 30px;
-            font-size: 11px;
-            color: #666;
-            text-align: center;
-        }
-        
-        .invoice-footer p {
-            margin: 5px 0;
-        }
-        
-        /* Page break */
-        @page {
-            size: A4;
-            margin: 20px;
-        }
-        
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-            .invoice-container {
-                margin: 0;
-                padding: 0;
-            }
-        }
+        .totals-container { width: 100%; }
+        .totals-table { width: 250px; margin-left: auto; border-collapse: collapse; }
+        .totals-table td { padding: 8px 5px; border-bottom: 1px solid #ddd; }
+        .total-row { background-color: #0d6efd; color: white; font-weight: bold; font-size: 14px; }
+        .total-row td { border: none !important; }
+
+        .footer { text-align: center; font-size: 10px; color: #777; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="invoice-container">
-        <!-- En-tête -->
-        <div class="invoice-header">
-            <div class="company-info">
-                <h1>TSITSI STORE</h1>
-                <p>Plateforme de Vente en Ligne</p>
-            </div>
-            <div class="invoice-details">
-                <div class="invoice-title">FACTURE</div>
-                <div class="invoice-number">N° {{ order.order_number }}</div>
-                <p style="margin-top: 15px;"><span class="label">Date:</span> {{ order.created|date:"d/m/Y" }}</p>
-                <p><span class="label">Heure:</span> {{ order.created|date:"H:i" }}</p>
-            </div>
-        </div>
+    <table class="header-table">
+        <tr>
+            <td style="width: 50%;">
+                <div class="invoice-title">TSITSI STORE</div>
+                <p>Plateforme de Vente en Ligne<br>Antananarivo, Madagascar</p>
+            </td>
+            <td class="text-right" style="width: 50%;">
+                <h2 class="text-blue">FACTURE</h2>
+                <p><strong>N° {{ order.order_number }}</strong></p>
+                <p>Date: {{ order.created|date:"d/m/Y" }} à {{ order.created|date:"H:i" }}</p>
+            </td>
+        </tr>
+    </table>
 
-        <!-- Corps de la facture -->
-        <div class="invoice-body">
-            <!-- Client et Adresse -->
-            <div class="client-section">
-                <div>
-                    <h6>Client</h6>
-                    <p><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
-                    <p>{{ order.email }}</p>
-                    <p>{{ order.phone }}</p>
-                </div>
-                <div>
-                    <h6>Adresse de Livraison</h6>
-                    <p>{{ order.address_line_1 }}</p>
-                    {% if order.address_line_2 %}<p>{{ order.address_line_2 }}</p>{% endif %}
-                    <p>{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</p>
-                    <p>{{ order.postal_code }} {{ order.country }}</p>
-                </div>
-            </div>
+    <table class="client-table">
+        <tr>
+            <td style="width: 50%; vertical-align: top;">
+                <h4 class="text-blue" style="border-bottom: 1px solid #ddd; margin-bottom: 10px;">CLIENT</h4>
+                <strong>{{ order.full_name }}</strong><br>
+                {{ order.email }}<br>
+                {{ order.phone }}
+            </td>
+            <td style="width: 50%; vertical-align: top;">
+                <h4 class="text-blue" style="border-bottom: 1px solid #ddd; margin-bottom: 10px;">ADRESSE DE LIVRAISON</h4>
+                {{ order.address_line_1 }}<br>
+                {% if order.address_line_2 %}{{ order.address_line_2 }}<br>{% endif %}
+                {{ order.postal_code }} {{ order.city }}<br>
+                {{ order.country }}
+            </td>
+        </tr>
+    </table>
 
-            <!-- Tableau des articles -->
-            <table class="items-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50%;">Produit</th>
-                        <th style="width: 15%;" class="text-right">Quantité</th>
-                        <th style="width: 20%;" class="text-right">Prix Unitaire</th>
-                        <th style="width: 15%;" class="text-right">Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in order_items %}
-                    <tr>
-                        <td>
-                            <div class="product-name">{{ item.product.product_name }}</div>
-                            {% if item.size %}<div style="font-size: 11px; color: #999;">Taille: {{ item.size }}</div>{% endif %}
-                        </td>
-                        <td class="text-right">{{ item.quantity }}</td>
-                        <td class="text-right">{{ item.product_price }} Ar</td>
-                        <td class="text-right" style="font-weight: 500;">{{ item.sub_total }} Ar</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th class="text-right">Qté</th>
+                <th class="text-right">Prix Unit.</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>
+                    <strong>{{ item.product.product_name }}</strong>
+                    {% if item.size %}<br><small style="color: #666;">Taille: {{ item.size }}</small>{% endif %}
+                </td>
+                <td class="text-right">{{ item.quantity }}</td>
+                <td class="text-right">{{ item.product_price|floatformat:0 }} Ar</td>
+                <td class="text-right"><strong>{{ item.sub_total|floatformat:0 }} Ar</strong></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-            <!-- Totaux -->
-            <div class="invoice-totals">
-                <table class="totals-table">
-                    <tr>
-                        <td class="label">Sous-total:</td>
-                        <td class="amount">{{ order.order_total }} Ar</td>
-                    </tr>
-                    {% if order.shipping_cost %}
-                    <tr>
-                        <td class="label">Frais de port:</td>
-                        <td class="amount">{{ order.shipping_cost }} Ar</td>
-                    </tr>
-                    {% endif %}
-                    {% if order.tax %}
-                    <tr>
-                        <td class="label">Taxe:</td>
-                        <td class="amount">{{ order.tax }} Ar</td>
-                    </tr>
-                    {% endif %}
-                    <tr class="total-row">
-                        <td class="label">TOTAL:</td>
-                        <td class="amount">{{ order.order_total }} Ar</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+    <div class="totals-container">
+        <table class="totals-table">
+            <tr>
+                <td>Sous-total:</td>
+                <td class="text-right">{{ subtotal|default:order.order_total|floatformat:0 }} Ar</td>
+            </tr>
+            {% if order.tax %}
+            <tr>
+                <td>TVA ({{ tax_rate }}%):</td>
+                <td class="text-right">{{ order.tax|floatformat:0 }} Ar</td>
+            </tr>
+            {% endif %}
+            <tr class="total-row">
+                <td>TOTAL TTC:</td>
+                <td class="text-right">{{ order.order_total|floatformat:0 }} Ar</td>
+            </tr>
+        </table>
+    </div>
 
-        <!-- Footer -->
-        <div class="invoice-footer">
-            <p><strong>Merci pour votre achat!</strong></p>
-            <p>Pour toute question, veuillez nous contacter.</p>
-            <p style="margin-top: 15px; font-size: 10px;">Facture générée automatiquement par TSITSI STORE - {{ order.created|date:"d/m/Y H:i" }}</p>
-        </div>
+    <div class="footer">
+        <p><strong>Merci de votre confiance !</strong></p>
+        <p>TSITSI STORE - Antananarivo - Madagascar</p>
+        <p>Document généré le {{ now|date:"d/m/Y H:i" }}</p>
     </div>
 </body>
 </html>

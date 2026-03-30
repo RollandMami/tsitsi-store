@@ -235,7 +235,7 @@
                     
                     <li class="nav-item me-3">
                         <a class="nav-link position-relative" href="{% url 'cart:cart_detail' %}">
-                            <i class="fa-solid fa-cart-shopping fa-lg"></i> Panier
+                            <i class="fa-solid fa-cart-shopping fa-lg cart-icon-gold"></i> Panier
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ cart_count|default:0 }}
                             </span>
@@ -273,7 +273,7 @@
 
             <div class="d-lg-none ms-auto">
                 <a class="nav-link position-relative text-white" href="{% url 'cart:cart_detail' %}">
-                    <i class="fa-solid fa-cart-shopping fa-lg"></i>
+                    <i class="fa-solid fa-cart-shopping fa-lg cart-icon-gold"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                         {{ cart_count|default:0 }}
                     </span>
@@ -293,7 +293,7 @@
             <i class="fa-solid fa-table-cells-large"></i><span>Catégories</span>
         </a>
         <a href="{% url 'cart:cart_detail' %}" class="mobile-nav-item position-relative">
-            <i class="fa-solid fa-cart-shopping"></i><span>Panier</span>
+            <i class="fa-solid fa-cart-shopping cart-icon-gold"></i><span>Panier</span>
             {% if cart_count > 0 %}
             <span class="position-absolute top-0 start-60 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                 {{ cart_count }}

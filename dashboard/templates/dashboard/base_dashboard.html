@@ -1,91 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load humanize %} 
 
-{% block title %}Tableau de Bord | Tsitsi Store{% endblock %}
+{% block title %}Dashboard | Tsitsi Store{% endblock %}
 
-{% comment %} 
-IMPORTANT: Supprime la navigation boutique de base.html 
-pour éviter les doublons visuels 
-{% endcomment %}
+{% comment %} Nettoyage de la navigation boutique standard {% endcomment %}
 {% block header_nav %}{% endblock %}
 
 {% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+    
     <style>
-        /* --- ISOLATION RADICALE DU STYLE DASHBOARD --- */
-        
-        /* Conteneur de navigation horizontal */
+        /* --- STYLE DASHBOARD OPTIMISÉ --- */
+        :root { --ts-blue: #0d6efd; --ts-dark: #212529; --ts-light: #f8f9fa; }
+
         .ts-db-nav-scroller {
             display: flex !important;
             overflow-x: auto !important;
-            white-space: nowrap !important;
             padding: 15px 5px !important;
-            margin: 0 0 20px 0 !important;
             gap: 12px !important;
-            background-color: #f8f9fa !important;
+            background-color: var(--ts-light) !important;
             border-bottom: 2px solid #eee !important;
             -webkit-overflow-scrolling: touch;
         }
         .ts-db-nav-scroller::-webkit-scrollbar { display: none; }
 
-        /* Les boutons de navigation */
         .ts-db-nav-card {
             flex: 0 0 auto !important;
             display: flex !important;
-            flex-direction: column !important; /* Force l'icône AU-DESSUS du texte */
+            flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
-            width: 90px !important;
-            height: 80px !important;
-            background: #ffffff !important;
+            width: 85px !important;
+            height: 75px !important;
+            background: #fff !important;
             border: 1px solid #e0e0e0 !important;
             border-radius: 12px !important;
             text-decoration: none !important;
-            transition: all 0.2s ease-in-out !important;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.05) !important;
+            transition: all 0.2s ease;
         }
 
-        /* Icônes à l'intérieur des boutons */
-        .ts-db-nav-card i {
-            font-size: 1.4rem !important;
-            color: #0d6efd !important;
-            margin-bottom: 6px !important;
-            display: block !important;
-        }
+        .ts-db-nav-card i { font-size: 1.3rem !important; color: var(--ts-blue) !important; margin-bottom: 4px; }
+        .ts-db-nav-card span { font-size: 0.7rem !important; font-weight: 600; color: #444; }
 
-        /* Texte sous les icônes */
-        .ts-db-nav-card span {
-            font-size: 0.75rem !important;
-            font-weight: 600 !important;
-            color: #444 !important;
-            display: block !important;
-        }
+        .ts-db-nav-card.ts-active { background-color: var(--ts-blue) !important; border-color: var(--ts-blue) !important; }
+        .ts-db-nav-card.ts-active i, .ts-db-nav-card.ts-active span { color: #fff !important; }
 
-        /* État ACTIF (Bouton sélectionné) */
-        .ts-db-nav-card.ts-active {
-            background-color: #0d6efd !important;
-            border-color: #0d6efd !important;
-        }
-        .ts-db-nav-card.ts-active i, 
-        .ts-db-nav-card.ts-active span {
-            color: #ffffff !important;
-        }
-
-        /* Effet au survol (Desktop) */
-        .ts-db-nav-card:hover {
-            transform: translateY(-3px) !important;
-            border-color: #0d6efd !important;
-        }
-
-        /* Style Sidebar Desktop */
-        .nav-link.active { 
-            background-color: #0d6efd !important; 
-            color: white !important; 
-            border-radius: 5px; 
-        }
-        canvas { min-height: 300px; }
+        /* Sidebar Desktop */
+        #sidebarMenu .nav-link { color: #adb5bd; transition: 0.3s; margin-bottom: 5px; }
+        #sidebarMenu .nav-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        #sidebarMenu .nav-link.active { background-color: var(--ts-blue) !important; color: #fff !important; }
     </style>
     {% block extra_css %}{% endblock %}
 {% endblock %}
@@ -93,9 +57,12 @@ pour éviter les doublons visuels
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-dark py-4 shadow">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-dark py-4 shadow position-fixed h-100">
             <div class="position-sticky">
-                <ul class="nav flex-column">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                    <span>Menu Principal</span>
+                </h6>
+                <ul class="nav flex-column mt-3">
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'main_dashboard' %}active{% endif %}" href="{% url 'dashboard:main_dashboard' %}">
                             <i class="fas fa-chart-line me-2"></i> Vue Générale
@@ -111,66 +78,54 @@ pour éviter les doublons visuels
                             <i class="fas fa-boxes me-2"></i> Stocks
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link {% if 'order' in request.path %}active{% endif %}" href="{% url 'dashboard:order_dashboard' %}"><i class="fas fa-truck me-2"></i> Commandes</a></li>
-                    <li class="nav-item"><a class="nav-link {% if 'clients' in request.path %}active{% endif %}" href="{% url 'dashboard:clients' %}"><i class="fas fa-users me-2"></i> Clients</a></li>
-                    <li class="nav-item"><a class="nav-link {% if 'admin' in request.path %}active{% endif %}" href="{% url 'admin:index' %}"><i class="fas fa-cog me-2"></i> Administration</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'order' in request.path %}active{% endif %}" href="{% url 'dashboard:order_dashboard' %}">
+                            <i class="fas fa-truck me-2"></i> Commandes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'clients' in request.path %}active{% endif %}" href="{% url 'dashboard:clients' %}">
+                            <i class="fas fa-users me-2"></i> Clients
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="display-6 fw-bold text-dark mb-0">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h1 class="h2 fw-bold text-dark mb-0">
                     <i class="fas fa-tachometer-alt me-2 text-primary"></i> Tsitsi Store
                 </h1>
-                {% block period_selector %}{% endblock %}
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    {% block period_selector %}{% endblock %}
+                </div>
             </div>
 
-            <div class="d-md-none">
-                <div class="ts-db-nav-scroller">
-                    <a href="{% url 'dashboard:main_dashboard' %}" class="ts-db-nav-card {% if request.resolver_match.url_name == 'main_dashboard' %}ts-active{% endif %}">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Général</span>
+            <div class="d-md-none mb-4">
+                <div class="ts-db-nav-scroller shadow-sm rounded">
+                    {% with url_name=request.resolver_match.url_name %}
+                    <a href="{% url 'dashboard:main_dashboard' %}" class="ts-db-nav-card {% if url_name == 'main_dashboard' %}ts-active{% endif %}">
+                        <i class="fas fa-chart-line"></i><span>Général</span>
                     </a>
-                    
                     <a href="{% url 'dashboard:products' %}" class="ts-db-nav-card {% if 'products' in request.path %}ts-active{% endif %}">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span>Produits</span>
+                        <i class="fas fa-shopping-bag"></i><span>Produits</span>
                     </a>
-                    
                     <a href="{% url 'dashboard:stock' %}" class="ts-db-nav-card {% if 'stock' in request.path %}ts-active{% endif %}">
-                        <i class="fas fa-boxes"></i>
-                        <span>Stocks</span>
+                        <i class="fas fa-boxes"></i><span>Stocks</span>
                     </a>
-                    
-                    <a href="{% url 'dashboard:order_dashboard' %}" class="ts-db-nav-card {% if 'orders' in request.path %}ts-active{% endif %}">
-                        <i class="fas fa-truck"></i>
-                        <span>Livraisons</span>
+                    <a href="{% url 'dashboard:order_dashboard' %}" class="ts-db-nav-card {% if 'order' in request.path %}ts-active{% endif %}">
+                        <i class="fas fa-truck"></i><span>Ventes</span>
                     </a>
-                    
                     <a href="{% url 'dashboard:clients' %}" class="ts-db-nav-card {% if 'clients' in request.path %}ts-active{% endif %}">
-                        <i class="fas fa-users"></i>
-                        <span>Clients</span>
+                        <i class="fas fa-users"></i><span>Clients</span>
                     </a>
-                    
-                    <a href="{% url 'admin:index' %}" class="ts-db-nav-card">
-                        <i class="fas fa-cog"></i>
-                        <span>Admin</span>
-                    </a>
+                    {% endwith %}
                 </div>
             </div>
 
             {% block dashboard_content %}{% endblock %}
-
         </main>
     </div>
 </div>
-<!-- Toast container (Bootstrap) -->
-<div id="ts-toast-wrapper" class="position-fixed top-0 end-0 p-3" style="z-index:1080; display: none;">
-    <div id="ts-toast-container"></div>
-</div>
-{% endblock %}
-
-{% block extra_scripts %}
-    <script src="{% static 'dashboard/js/dashboard.js' %}"></script>
 {% endblock %}

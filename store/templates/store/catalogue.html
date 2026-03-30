@@ -5,6 +5,7 @@
 {% block title %}
     {% if current_category %}{{ current_category.name }}{% else %}Catalogue{% endif %} - Tsitsi Store
 {% endblock %}
+
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'store/css/styles.css' %}">
 {% endblock %}
@@ -12,145 +13,6 @@
 {% block content %}
 <div class="container py-5">
     
-    {# section Meilleurs Ventes #}
-    <!--
-    <section class="mb-5">
-        <h2 class="display-6 fw-bold mb-4 text-center"> <i class="fa-solid fa-trophy"></i>Meilleurs Ventes <i class="fa-solid fa-star"></i></h2>
-        <div id="topSellersCarousel" class="carousel slide" data-bs-ride="carousel">
-          <ol class="carousel-indicators">
-            {% for i in top_sellers %}
-              <li data-bs-target="#topSellersCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
-            {% endfor %}
-          </ol>
-          <div class="carousel-inner">
-            {% for product in top_sellers %}
-              <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <a href="{{ product.get_url }}" class="d-block text-decoration-none text-dark">
-                  <img src="{{ product.images.url }}" class="d-block w-100" alt="{{ product.product_name }}" style="height:250px; object-fit:contain;">
-                  <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
-                    <h5 class="mb-0">{{ product.product_name }}</h5>
-                    <small>{{ product.get_times_purchased }} achats</small>
-                  </div>
-                </a>
-              </div>
-            {% empty %}
-              <div class="carousel-item active">
-                <div class="d-flex justify-content-center align-items-center" style="height:250px;">
-                  <span class="text-muted">Pas de meilleures ventes pour l'instant</span>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-          {% if top_sellers|length > 1 %}
-          <button class="carousel-control-prev" type="button" data-bs-target="#topSellersCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Précédent</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#topSellersCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Suivant</span>
-          </button>
-          {% endif %}
-        </div>
-    </section>
-
-    {# section Meilleurs Offres de la Semaine #}
-    <section class="mb-5">
-        <h2 class="display-6 fw-bold mb-4 text-center">Meilleurs Offres de la Semaine</h2>
-        <div id="weeklyOffersCarousel" class="carousel slide" data-bs-ride="carousel">
-          <ol class="carousel-indicators">
-            {% for i in "1234"|make_list %}
-              <li data-bs-target="#weeklyOffersCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
-            {% endfor %}
-          </ol>
-          <div class="carousel-inner">
-            {% for product in weekly_promotions %}
-              {% if forloop.counter0|divisibleby:4 %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-              {% endif %}
-                    <div class="col">
-                        <div class="card h-100 product-item product-card border-0 shadow-sm d-flex flex-column">
-                            <a href="{{ product.get_url }}" class="text-decoration-none text-dark d-flex flex-column h-100">
-                                <div class="d-flex justify-content-center align-items-center p-3" style="height: 180px;">
-                                    <img src="{{ product.images.url }}" class="card-img-top img-fluid" alt="{{ product.product_name }}" style="max-height: 100%; width: auto; object-fit: contain;">
-                                </div>
-
-                                <div class="card-body p-3 d-flex flex-column flex-grow-1">
-                                    <div class="mb-2">
-                                        <h6 class="card-title fw-bold product-title-limit mb-1" style="font-size: 0.9rem;">{{ product.product_name }}</h6>
-                                        <p class="small text-muted mb-0">{{ product.category.name }}</p>
-                                    </div>
-
-                                    <div class="mt-auto">
-                                        {% with avg_rating=product.get_average_rating %}
-                                        {% with reviews_count=product.reviewandrating_set.count %}
-                                        
-                                        <div class="d-flex align-items-center mb-1">
-                                            <span class="text-warning d-inline-flex">
-                                                {% for i in "1234567"|make_list %}
-                                                    <i class="fas fa-star" 
-                                                    style="font-size: 0.6rem; color: {% if avg_rating|floatformat:"0"|add:0 >= forloop.counter %}#ffc107{% else %}#e9ecef{% endif %};">
-                                                    </i>
-                                                {% endfor %}
-                                            </span>
-                                        </div>
-
-                                        <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 0.6rem;"> 
-                                            <span class="text-muted">
-                                                ({{ avg_rating|floatformat:1 }} / 7) - ({{ reviews_count }} avis)
-                                            </span>
-                                            <span class="text-muted">
-                                                <i class="fas fa-shopping-bag me-1"></i> {{ product.get_times_purchased }} achats
-                                            </span>
-                                        </div>
-                                        {% endwith %}
-                                        {% endwith %}
-                                        
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="fw-bolder text-success">{{ product.price|floatformat:2|intcomma}} MGA</span>
-                                            {% if product.stock <= product.reorder_point and product.stock > 0 %}
-                                                <span class="badge bg-warning text-dark" style="font-size: 0.6rem;">Stock Faible</span>
-                                            {% elif product.stock == 0 %}
-                                                <span class="badge bg-danger" style="font-size: 0.6rem;">Rupture</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <div class="card-footer bg-white border-top-0 p-3 pt-0 text-center">
-                                {% if product.stock > 0 %}
-                                    <a href="{% url 'cart:add_cart' product.id %}" class="btn btn-sm btn-primary w-100 py-2">
-                                        <i class="fas fa-cart-plus me-1"></i> Ajouter
-                                    </a>
-                                {% else %}
-                                    <button class="btn btn-sm btn-secondary w-100 py-2" disabled>Indisponible</button>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-              {% if forloop.counter|divisibleby:4 or forloop.last %}
-                  </div>
-                </div>
-              {% endif %}
-            {% empty %}
-              <div class="carousel-item active">
-                <div class="d-flex justify-content-center align-items-center" style="height:200px;">
-                  <span class="text-muted">Aucune offre cette semaine.</span>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-          {% if weekly_promotions|length > 4 %}
-          <button class="carousel-control-prev" type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Précédent</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Suivant</span>
-          </button>
-          {% endif %}
-        </div>
-    </section>
-    -->
     <h1 class="display-5 fw-bold mb-4 text-center">
         {% if current_category %}
             {{ current_category.name }}
@@ -169,14 +31,13 @@
     {% endif %}
 
     <div class="row mb-4 bg-light p-3 rounded shadow-sm align-items-center">
-        
         <div class="col-md-3">
             <p class="mb-0 fw-bold">
                 <i class="fas fa-cubes me-2"></i> {{ products_count }} Produit{% if products_count > 1 %}s{% endif %} trouvé{% if products_count > 1 %}s{% endif %}
             </p>
         </div>
         
-       <div class="col-md-5 offset-md-4">
+        <div class="col-md-5 offset-md-4">
             <label for="sort-select" class="form-label visually-hidden">Trier par</label>
             <select id="sort-select" class="form-select form-select-sm" onchange="applySort(this.value);">
                 <option value="" {% if not request.GET.sort %}selected{% endif %}>Trier par : Pertinence</option>
@@ -188,9 +49,9 @@
     </div>
     
     <div class="row">
-        
+        {# Sidebar Catégories #}
         <div class="col-lg-3 mb-4">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
                 <div class="card-header fw-bold bg-primary text-white"><i class="fas fa-list-alt me-2"></i> Catégories</div>
                 <ul class="list-group list-group-flush">
                     <a href="{% url 'store:catalogue' %}" class="list-group-item list-group-item-action {% if not current_category %}active{% endif %}">
@@ -207,12 +68,9 @@
                     {% endfor %}
                 </ul>
             </div>
-            
-            <div class="mt-4 p-3 bg-light rounded text-center small text-muted">
-                Filtres additionnels (prix, taille) à implémenter ici.
-            </div>
         </div>
         
+        {# Grille de Produits #}
         <div class="col-lg-9">
             <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                 
@@ -226,41 +84,38 @@
 
                             <div class="card-body p-3 d-flex flex-column flex-grow-1">
                                 <div class="mb-2">
-                                    <h1 class="card-title fw-bold product-title-limit mb-1" style="font-size: 1rem;">{{ product.product_name }}</h1>
+                                    <h2 class="card-title fw-bold product-title-limit mb-1" style="font-size: 1rem; height: 2.4em; overflow: hidden;">{{ product.product_name }}</h2>
                                     <p class="small text-muted mb-0">{{ product.category.name }}</p>
                                 </div>
 
                                 <div class="mt-auto">
                                     {% with avg_rating=product.get_average_rating %}
-                                    {% with reviews_count=product.reviewandrating_set.count %}
-                                    
                                     <div class="d-flex align-items-center mb-1">
                                         <span class="text-warning d-inline-flex">
-                                            {% for i in "1234567"|make_list %}
+                                            {% for i in "12345"|make_list %}
                                                 <i class="fas fa-star" 
-                                                style="font-size: 0.7rem; color: {% if avg_rating|floatformat:"0"|add:0 >= forloop.counter %}#ffc107{% else %}#e9ecef{% endif %};">
+                                                style="font-size: 0.7rem; color: {% if avg_rating >= forloop.counter %}#ffc107{% else %}#e9ecef{% endif %};">
                                                 </i>
                                             {% endfor %}
                                         </span>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 0.65rem;"> 
-                                        <span class="text-muted">
-                                            ({{ avg_rating|floatformat:1 }} / 7) - ({{ reviews_count }} avis)
-                                        </span>
-                                        <span class="text-muted">
-                                            <i class="fas fa-shopping-bag me-1"></i> {{ product.get_times_purchased }} achats
-                                        </span>
+                                        <span class="text-muted">({{ product.reviewandrating_set.count }} avis)</span>
+                                        <span class="text-muted"><i class="fas fa-shopping-bag me-1"></i> {{ product.get_times_purchased }}</span>
                                     </div>
-                                    {% endwith %}
                                     {% endwith %}
                                     
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bolder text-success">{{ product.price|floatformat:2|intcomma}} MGA</span>
+                                        {# Affiche "Prix" ou "Prix min - max" selon si une famille existe #}
+                                        <span class="fw-bolder text-success" style="font-size: 0.9rem;">
+                                            {{ product.get_display_price }}
+                                        </span>
+                                        
                                         {% if product.stock <= product.reorder_point and product.stock > 0 %}
-                                            <span class="badge bg-warning text-dark" style="font-size: 0.6rem;">Stock Faible</span>
+                                            <span class="badge bg-warning text-dark" style="font-size: 0.5rem;">Stock Faible</span>
                                         {% elif product.stock == 0 %}
-                                            <span class="badge bg-danger" style="font-size: 0.6rem;">Rupture</span>
+                                            <span class="badge bg-danger" style="font-size: 0.5rem;">Rupture</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -268,7 +123,12 @@
                         </a>
 
                         <div class="card-footer bg-white border-top-0 p-3 pt-0 text-center">
-                            {% if product.stock > 0 %}
+                            {% if product.group_id %}
+                                {# S'il y a un group_id, on considère qu'il y a des variantes : on renvoie vers le détail #}
+                                <a href="{{ product.get_url }}" class="btn btn-sm btn-outline-primary w-100 py-2">
+                                    <i class="fas fa-eye me-1"></i> Voir options
+                                </a>
+                            {% elif product.stock > 0 %}
                                 <a href="{% url 'cart:add_cart' product.id %}" class="btn btn-sm btn-primary w-100 py-2">
                                     <i class="fas fa-cart-plus me-1"></i> Ajouter
                                 </a>
@@ -279,66 +139,52 @@
                     </div>
                 </div>
                 {% empty %}
-                <div class="col-12">
-                    <div class="alert alert-info text-center mt-5" role="alert">
-                        <i class="fas fa-info-circle me-2"></i> Désolé, aucun produit ne correspond à votre recherche dans cette catégorie.
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-info border-0 shadow-sm">
+                        <i class="fas fa-info-circle me-2"></i> Aucun produit trouvé.
                     </div>
                 </div>
                 {% endfor %}
 
             </div>
             
+            {# Pagination #}
             {% if page_obj.has_other_pages %}
                 <div class="d-flex justify-content-center mt-5">
                     <nav aria-label="Pagination produits">
-                        <ul class="pagination">
+                        <ul class="pagination shadow-sm">
                             <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-                                <a class="page-link" href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}">Précédent</a>
+                                <a class="page-link" href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% else %}#{% endif %}">Précédent</a>
                             </li>
                             
                             {% for i in page_obj.paginator.page_range %}
-                                {% if page_obj.number == i %}
-                                    <li class="page-item active" aria-current="page"><a class="page-link" href="#">{{ i }}</a></li>
-                                {% else %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                                {% endif %}
+                                <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ i }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">{{ i }}</a>
+                                </li>
                             {% endfor %}
                             
                             <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-                                <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}">Suivant</a>
+                                <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% else %}#{% endif %}">Suivant</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
             {% endif %}
-            
         </div>
     </div>
-    
-
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'store/js/search.js' %}"></script>
     <script>
         function applySort(sortValue) {
-            // Récupère l'URL actuelle complète
             let currentUrl = new URL(window.location.href);
-            
             if (sortValue) {
-                // Ajoute ou met à jour le paramètre ?sort=...
                 currentUrl.searchParams.set('sort', sortValue);
             } else {
-                // Supprime le tri si "Pertinence" est choisi
                 currentUrl.searchParams.delete('sort');
             }
-            
-            // Très important : on remet la pagination à 1 lors d'un nouveau tri
             currentUrl.searchParams.delete('page'); 
-            
-            // Redirection vers la nouvelle URL construite proprement
             window.location.href = currentUrl.toString();
         }
     </script>

@@ -5,398 +5,222 @@
 {% block title %}{{ product.product_name }} - Détail Produit{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<style>
+    /* Galerie */
+    .miniature-img { transition: all 0.2s ease; border: 2px solid transparent !important; cursor: pointer; }
+    .miniature-img:hover, .active-mini { border-color: #0d6efd !important; transform: translateY(-2px); }
+    
+    /* Cartes des variantes */
+    .variant-card {
+        background-color: #fff;
+        border: 1px solid #dee2e6 !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none !important;
+    }
 
-    <div class="row">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'store:catalogue' %}" class="text-decoration-none">Boutique</a></li>
-                <li class="breadcrumb-item">
-                    <a href="{% url 'store:products_by_category' product.category.slug %}" class="text-decoration-none">
-                        {{ product.category.name }}
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">{{ product.product_name }}</li>
-            </ol>
-        </nav>
-    </div>
+    /* Cercle radio personnalisé */
+    .custom-radio-circle {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 50%;
+        display: inline-block;
+        transition: all 0.2s ease;
+    }
+
+    /* État actif (Produit actuel) */
+    .active-card {
+        border-color: #0d6efd !important;
+        background-color: #f8faff;
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.1) !important;
+        cursor: default;
+    }
+
+    .active-card .custom-radio-circle {
+        border-color: #0d6efd;
+        border-width: 6px;
+    }
+
+    .active-card h6 { color: #0d6efd !important; }
+
+    .nav-tabs .nav-link.active { color: #0d6efd; border-bottom: 3px solid #0d6efd; background: none; }
+
+    /* Couleur Dorée pour l'icône panier */
+    .cart-icon-gold {
+        color: #FFD700; /* Doré */
+    }
+
+</style>
+
+<div class="container py-5">
+    {# --- FIL D'ARIANE --- #}
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'store:catalogue' %}" class="text-decoration-none text-muted">Boutique</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'store:products_by_category' product.category.slug %}" class="text-decoration-none text-muted">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active fw-bold text-dark">{{ product.product_name }}</li>
+        </ol>
+    </nav>
     
     <div class="row g-5">
-        
+        {# --- GALERIE IMAGES --- #}
         <div class="col-lg-6">
-            
-            <div class="main-image mb-3 border rounded shadow-sm d-flex justify-content-center">
-                <img  
-                    id="mainImage" 
-                    src="{{ product.images.url }}" 
-                    class="img-fluid rounded" 
-                    alt="{{ product.product_name }}"
-                    style="max-height: 450px; object-fit: contain; cursor: zoom-in;"
-                >
+            <div class="main-image mb-3 border rounded-3 shadow-sm bg-white d-flex justify-content-center align-items-center p-3" style="height: 480px;">
+                <img id="mainImage" src="{{ product.images.url }}" class="img-fluid rounded" style="max-height: 100%; object-fit: contain;">
             </div>
-            
             <div class="row row-cols-auto g-2 justify-content-center">
                 <div class="col">
-                    <img 
-                        src="{{ product.images.url }}" 
-                        class="img-thumbnail miniature-img active-mini" 
-                        alt="Vue principale" 
-                        style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                    >
+                    <img src="{{ product.images.url }}" class="img-thumbnail miniature-img active-mini" style="width: 80px; height: 80px; object-fit: cover;">
                 </div>
-                
                 {% for image in product_gallery %}
                 <div class="col">
-                    <img 
-                        src="{{ image.image.url }}" 
-                        class="img-thumbnail miniature-img" 
-                        alt="Miniature {{ forloop.counter }}" 
-                        style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                    >
+                    <img src="{{ image.image.url }}" class="img-thumbnail miniature-img" style="width: 80px; height: 80px; object-fit: cover;">
                 </div>
                 {% endfor %}
             </div>
         </div>
         
+        {# --- INFOS & ACHAT --- #}
         <div class="col-lg-6">
+            <h1 class="display-5 fw-bold mb-2">{{ product.product_name }}</h1>
             
-            <h1 class="display-4 fw-bold mb-3">{{ product.product_name }}</h1>
-            
-            {% with avg_rating=product.get_average_rating %}
-            {% with reviews_count=reviews.count %}
             <div class="d-flex align-items-center mb-3">
-                
-                <span class="text-warning me-3">
-                    {% for i in "1234567"|make_list %}
-                        <i class="fas fa-star" 
-                           style="font-size: 1.2rem; 
-                           {% if avg_rating|floatformat:"0"|add:0 >= forloop.counter %}
-                               color: #ffc107;
-                           {% else %}
-                               color: #e9ecef;
-                           {% endif %}">
-                        </i>
+                <div class="text-warning me-2">
+                    {% for i in "12345"|make_list %}
+                        <i class="fas fa-star {% if product.get_average_rating >= forloop.counter %}text-warning{% else %}text-light border-secondary{% endif %}"></i>
                     {% endfor %}
-                </span>
-                
-                <span class="text-muted fw-bold me-3">
-                    {{ avg_rating|floatformat:1 }} / 7
-                </span>
-
-                <span class="small text-muted border-start ps-3">
-                    <i class="fas fa-comment me-1"></i> {{ reviews_count }} avis | 
-                    <i class="fas fa-shopping-bag me-1 ms-2"></i> {{ product.get_times_purchased }} achats
-                </span>
+                </div>
+                <span class="text-muted small border-start ps-2">{{ reviews.count }} avis</span>
             </div>
-            {% endwith %}
-            {% endwith %}
-            <p class="h2 text-success fw-bolder mb-4">
-                {{ product.price|floatformat:2|intcomma}} MGA
-            </p>
+
+            <h2 class="text-primary fw-bolder mb-4">
+                <span id="price-display">{{ product.price|floatformat:0|intcomma }}</span> 
+                <small class="fs-6">MGA</small>
+            </h2>
             
-            <p class="lead mb-4">
-                {% if product.is_available and product.stock > 0 %}
-                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> En Stock</span>
-                    <span class="text-muted small ms-3">({{ product.stock }} unités restantes)</span>
-                {% elif product.stock == 0 %}
-                    <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i> Rupture de Stock</span>
+            <div class="mb-4">
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2"><i class="fas fa-check-circle me-1"></i> En Stock</span>
                 {% else %}
-                    <span class="badge bg-secondary"><i class="fas fa-clock me-1"></i> Indisponible</span>
+                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2"><i class="fas fa-times-circle me-1"></i> Rupture</span>
                 {% endif %}
-            </p>
-            
-            {% if product.is_available and product.stock > 0 %}
-                <form action="{% url 'cart:add_cart' product.id %}" method="POST" class="mb-5 p-3 border rounded bg-light shadow-sm">
+            </div>
+
+            {% if product.stock > 0 %}
+                <form action="{% url 'cart:add_cart' product.id %}" method="POST" class="p-4 border rounded-3 bg-light shadow-sm">
                     {% csrf_token %}
                     
-                    <div class="mb-3">
-                        <label for="selectSize" class="form-label fw-bold">Taille:</label>
-                        <select class="form-select {% if not product.supports_sizes %}text-muted{% endif %}" 
-                                id="selectSize" name="size"
-                                {% if not product.supports_sizes %}disabled{% endif %}>
-                            {% if product.supports_sizes %}
-                                <option selected>Sélectionner</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            {% else %}
-                                <option selected>Taille non applicable</option>
-                            {% endif %}
-                        </select>
-                    </div>
+                    {# SECTION VARIANTES (GROUP_ID) #}
+                    {% if variants %}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-3 text-primary">Choisir une option :</label>
+                            <div class="d-flex flex-column gap-3" id="variant-container">
+                                
+                                {# 1. Le produit actuel #}
+                                <div class="variant-card p-3 border rounded-4 shadow-sm d-flex align-items-center justify-content-between active-card">
+                                    <div class="d-flex align-items-center">
+                                        <div class="custom-radio-circle me-3"></div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold text-dark">{{ product.variant_value|default:"Option actuelle" }}</h6>
+                                            <small class="text-success">Sélectionné</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="fw-bolder text-primary fs-5">{{ product.price|floatformat:0|intcomma }} MGA</span>
+                                    </div>
+                                </div>
 
-                    <div class="mb-4">
-                        <label for="selectQuantity" class="form-label fw-bold">Quantité:</label>
-                        <input type="number" name="quantity" id="selectQuantity" class="form-control" value="1" min="1" max="{{ product.stock }}" style="width: 100px;">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="fas fa-shopping-cart me-2"></i> Ajouter au Panier
-                    </button>
-                </form>
-            {% else %}
-                <button class="btn btn-secondary btn-lg w-100 mb-5" disabled>Produit Indisponible</button>
-            {% endif %}
-            
-        </div>
-    </div>
-    
-    <div class="row mt-5">
-        <div class="col-lg-12">
-            
-            <ul class="nav nav-tabs" id="productTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="spec-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab" aria-controls="specs" aria-selected="false">Spécifications</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">
-                        Avis ({{ reviews.count }})
-                    </button>
-                </li>
-            </ul>
-            
-            <div class="tab-content border border-top-0 p-4 bg-white shadow-sm">
-                
-                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="desc-tab">
-                    <h5 class="fw-bold">Détails du Produit</h5>
-                    <p>{{ product.description|linebreaks }}</p>
-                </div>
-                
-                <div class="tab-pane fade" id="specs" role="tabpanel" aria-labelledby="spec-tab">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Catégorie :</strong> {{ product.category.name }}</li>
-                        <li class="list-group-item"><strong>Référence :</strong> #TS-{{ product.id }}</li>
-                        <li class="list-group-item"><strong>Stock :</strong> {{ product.stock }} unités</li>
-                        <li class="list-group-item"><strong>Date de Création :</strong> {{ product.created_date|date:"d M Y" }}</li>
-                    </ul>
-                </div>
-
-                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                    
-                    {% if reviews %}
-                        <h4 class="mb-4">Liste des Avis</h4>
-                    {% endif %}
-                    
-                    {% for review in reviews %}
-                        <div class="d-flex mb-4 border-bottom pb-3">
-                            
-                            <div class="flex-shrink-0">
-                                {% if review.user.profile.profile_picture %}
-                                    <img 
-                                        src="{{ review.user.profile.profile_picture.url }}" 
-                                        alt="{{ review.user.username }}" 
-                                        class="rounded-circle me-3" 
-                                        style="width: 40px; height: 40px; object-fit: cover;"
-                                    >
-                                {% else %}
-                                    <i 
-                                        class="fas fa-user-circle me-3 text-secondary" 
-                                        style="font-size: 40px; width: 40px; height: 40px;"
-                                    ></i>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-bold">{{ review.user.get_full_name|default:review.user.username }}</h6>
-                                
-                                <div class="text-warning mb-1">
-                                    {% for i in "1234567"|make_list %}
-                                        <i class="fas fa-star" 
-                                        style="font-size: 0.9rem; 
-                                        {% if review.rating >= forloop.counter %}
-                                            color: #ffc107;
-                                        {% else %}
-                                            color: #e9ecef;
-                                        {% endif %}"
-                                        ></i>
-                                    {% endfor %}
-                                    <span class="small text-muted ms-2">{{ review.created_at|date:"d M Y" }}</span>
-                                </div>
-                                
-                                <p class="mb-2">{{ review.review|linebreaksbr }}</p>
-                                
-                                {% if review.images.all %}
-                                <div class="review-images d-flex flex-wrap">
-                                    {% for image in review.images.all %}
-                                        <img src="{{ image.image.url }}" alt="Image Avis" class="img-thumbnail me-2 mb-2" style="width: 80px; height: 80px; object-fit: cover;">
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                                
-                            </div>
-                        </div>
-                    {% empty %}
-                        <p class="text-muted">Aucun avis pour l'instant. Soyez le premier à donner le vôtre !</p>
-                    {% endfor %}
-                    
-                    <hr class="my-4">
-                    
-                    {% if user.is_authenticated %}
-                        <h4 class="mb-3">Laisser un Avis</h4>
-                        <p class="text-info small">Votre avis remplacera tout avis précédent que vous avez soumis pour ce produit.</p>
-                        
-                        <form action="{% url 'store:submit_review' product.id %}" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            
-                            <p class="fw-bold mb-1">Notez le produit (1 à 7 étoiles) :</p>
-                            <div id="reviewFormStars" class="rating-stars mb-3 d-flex align-items-center">
-                                {% for i in "1234567"|make_list %}
-                                    <i class="fas fa-star star-icon me-1" 
-                                    data-rating="{{ forloop.counter }}" 
-                                    style="cursor: pointer; font-size: 1.5rem; color: #adb5bd;">
-                                    </i>
-                                {% endfor %}
-                                
-                                <input type="hidden" name="rating" id="id_review_rating_value" value="">
-                            </div>
-                            
-                            <div class="form-group mb-3">
-                                <label for="{{ review_form.review.id_for_label }}" class="form-label fw-bold">Commentaire :</label>
-                                {{ review_form.review }} 
-                            </div>
-                            
-                            <p class="fw-bold mb-1">Images jointes (Optionnel, 3 max) :</p>
-                            <div class="row mb-3">
-                                <div class="col-md-4 mb-2">
-                                     <input type="file" name="image_1" class="form-control" accept="image/*">
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                     <input type="file" name="image_2" class="form-control" accept="image/*">
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                     <input type="file" name="image_3" class="form-control" accept="image/*">
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-success mt-2"><i class="fas fa-paper-plane me-1"></i> Soumettre l'avis</button>
-                        </form>
-                    {% else %}
-                        <p class="alert alert-warning text-center">
-                            <i class="fas fa-lock me-2"></i> Vous devez être connecté pour laisser un avis. <a href="{% url 'users:login' %}?next={{ request.path }}">Connectez-vous ici</a>.
-                        </p>
-                    {% endif %}
-                </div>
-            </div>
-
-        </div>
-    </div>
-    
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="mb-4 fw-bold">Articles Similaires</h3>
-            {% if similar_products %}
-                <div class="row row-cols-2 row-cols-md-4 g-3">
-                    {% for sp in similar_products %}
-                        <div class="col">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <a href="{{ sp.get_url }}" class="text-decoration-none text-dark">
-                                    <img src="{{ sp.images.url }}" class="card-img-top" alt="{{ sp.product_name }}" style="height:200px; object-fit:contain;">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-title mb-1">{{ sp.product_name|truncatechars:25 }}</h6>
-                                        <p class="card-text text-success fw-bold mb-0">{{ sp.price|floatformat:2|intcomma }} MGA</p>
+                                {# 2. Les autres produits de la même famille #}
+                                {% for variant in variants %}
+                                <a href="{{ variant.get_url }}" class="variant-card p-3 border rounded-4 shadow-sm d-flex align-items-center justify-content-between bg-white">
+                                    <div class="d-flex align-items-center">
+                                        <div class="custom-radio-circle me-3"></div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold text-dark">{{ variant.variant_value|default:"Autre option" }}</h6>
+                                            <small class="text-muted">Cliquez pour voir</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="fw-bolder text-muted fs-5">{{ variant.price|floatformat:0|intcomma }} MGA</span>
                                     </div>
                                 </a>
+                                {% endfor %}
+
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-secondary">Aucun produit similaire pour le moment.</div>
+                    {% endif %}
+
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Quantité</label>
+                            <input type="number" name="quantity" class="form-control text-center" value="1" min="1" max="{{ product.stock }}">
+                        </div>
+                        <div class="col-md-8 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow">
+                                <i class="fas fa-shopping-cart me-2 cart-icon-gold"></i> Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </form>
             {% endif %}
+        </div>
+    </div>
+
+    {# --- ONGLETS --- #}
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs border-0" id="productTabs">
+                <li class="nav-item"><button class="nav-link active fw-bold px-4" data-bs-toggle="tab" data-bs-target="#description">Description</button></li>
+                <li class="nav-item"><button class="nav-link fw-bold px-4" data-bs-toggle="tab" data-bs-target="#reviews">Avis ({{ reviews.count }})</button></li>
+            </ul>
+            <div class="tab-content border p-4 bg-white shadow-sm">
+                <div class="tab-pane fade show active" id="description">
+                    {{ product.description|linebreaks }}
+                </div>
+                <div class="tab-pane fade" id="reviews">
+                    {% include 'store/includes/reviews.html' %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --------------------------------------------------------
-        // JS pour le Carrousel d'Images
-        // --------------------------------------------------------
-        const mainImage = document.getElementById('mainImage');
+        // Gestion Galerie
+        const mainImg = document.getElementById('mainImage');
         const thumbnails = document.querySelectorAll('.miniature-img');
-        
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Gestion de la miniature active
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                mainImg.src = this.src;
                 thumbnails.forEach(t => t.classList.remove('active-mini'));
                 this.classList.add('active-mini');
-                
-                // Changement de l'image principale
-                mainImage.src = this.src;
             });
         });
+    
+            // Gestion du système de notation (Review Rating)
+        const stars = document.querySelectorAll('.text-warning.me-2 i, .rating i'); // Ajuste le sélecteur selon tes classes
 
-        // --------------------------------------------------------
-        // JS pour la notation par étoiles (Review/Rating)
-        // --------------------------------------------------------
-        const ratingContainer = document.getElementById('reviewFormStars');
-        // CIBLE L'ID STATIQUE DANS LE FORMULAIRE
-        const hiddenRatingField = document.getElementById('id_review_rating_value'); 
-        
-        // Exécuter la logique de notation uniquement si les éléments sont présents (utilisateur connecté)
-        if (ratingContainer && hiddenRatingField) {
-            console.log('Éléments de notation trouvés. Ajout des écouteurs.');
-            
-            const starIcons = ratingContainer.querySelectorAll('.star-icon');
-            
-            // Fonction pour mettre à jour l'apparence des étoiles
-            function updateStarAppearance(ratingValue) {
-                starIcons.forEach(star => {
-                    const sValue = parseInt(star.getAttribute('data-rating'));
-                    // Utilisez une couleur neutre pour le non sélectionné
-                    const colorNonSelected = '#adb5bd'; 
-                    
-                    if (sValue <= ratingValue) {
-                        star.style.color = '#ffc107'; // Jaune vif (sélectionné)
+        // Si tu as un formulaire d'avis avec des étoiles cliquables :
+        const ratingStars = document.querySelectorAll('.stars-input i'); // Remplace par ta classe réelle
+        ratingStars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                ratingStars.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.replace('far', 'fas'); // étoile pleine
+                        s.classList.add('text-warning');
                     } else {
-                        star.style.color = colorNonSelected; 
+                        s.classList.replace('fas', 'far'); // étoile vide
+                        s.classList.remove('text-warning');
                     }
                 });
-            }
-            
-            // Initialiser les étoiles si une note existe déjà (pour la modification)
-            const initialRating = parseInt(hiddenRatingField.value) || 0;
-            updateStarAppearance(initialRating);
-
-
-            starIcons.forEach(star => {
-                // Clic: Définit la note réelle
-                star.addEventListener('click', function() {
-                    const ratingValue = parseInt(this.getAttribute('data-rating'));
-                    hiddenRatingField.value = ratingValue;
-                    updateStarAppearance(ratingValue);
-                    console.log('Note sélectionnée : ' + ratingValue); 
-                });
-                
-                // Survol (Mouseover): Pré-visualise la sélection
-                star.addEventListener('mouseover', function() {
-                     const ratingValue = parseInt(this.getAttribute('data-rating'));
-                     starIcons.forEach(s => {
-                        const sValue = parseInt(s.getAttribute('data-rating'));
-                        if (sValue <= ratingValue) {
-                            s.style.color = 'orange'; // Couleur de survol
-                        }
-                     });
-                });
-                
-                // Sortie (Mouseout): Réinitialise à la note sélectionnée
-                star.addEventListener('mouseout', function() {
-                    const currentRating = parseInt(hiddenRatingField.value) || 0;
-                    updateStarAppearance(currentRating);
-                });
+                // Si tu as un input hidden pour stocker la note :
+                document.getElementById('rating-value').value = index + 1;
             });
-        } else {
-             // Ce log ne devrait s'afficher que si l'utilisateur est déconnecté 
-             // ou s'il y a un autre problème de chargement de l'élément.
-             console.log('Formulaire de notation non trouvé ou non affiché.');
-        }
-        
-    });
-</script>
+        });
+});
 
+</script>
 {% endblock %}

@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import CustomUser
-from django.db.models import Avg
+from django.db.models import Avg, Min, Max
 
 # Import pour le redimensionnement automatique
 from django_resized import ResizedImageField
@@ -24,17 +24,17 @@ class Category(models.Model):
     def get_url(self):
         return reverse('store:products_by_category', args=[self.slug])
 
-
 class Product(models.Model):
-    """Modele pour un produit unique vendu sur Tsitsi Store."""
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Catégorie', related_name='products')
-    product_name = models.CharField(max_length=200, unique=True, verbose_name="Nom du Produit")
+    """Modele : chaque article est un noeud complet, lié par group_id."""
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Catégorie', related_name='products')
+    product_name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(max_length=500, blank=True, verbose_name="Description Détaillée")
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Prix (MGA)")
     
-    # CORRECTION : Utilisation de ResizedImageField pour éviter les erreurs PIL/S20
-    # force le format JPG, compresse à 75% et limite à 800px
+    # Chaque article a son propre prix et son propre stock
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Prix (MGA)")
+    stock = models.IntegerField(verbose_name="Stock disponible")
+    
     images = ResizedImageField(
         size=[800, 800], 
         quality=75, 
@@ -44,19 +44,24 @@ class Product(models.Model):
         verbose_name="Image Principale"
     )
     
-    # Indique si ce produit est décliné en tailles (S/M/L/XL etc.)
-    # Par défaut, on considère qu'un article n'a pas de taille spécifique.
-    # Le champ permet à l'administrateur de cocher "Oui" pour les vêtements.
-    has_size = models.BooleanField(
-        default=False,
-        verbose_name="Gestion des tailles"
+    # --- LOGIQUE DE GROUPE (Noeuds équivalents) ---
+    group_id = models.CharField(
+        max_length=50, blank=True, null=True, 
+        help_text="ID commun pour lier les variantes (ex: 'CUTTER-001')."
     )
-
-    stock = models.IntegerField(verbose_name="Quantité en Stock")
+    variant_label = models.CharField(
+        max_length=100, blank=True, 
+        help_text="Ex: 'Rouge', 'Bleu', 'XL'."
+    )
+    is_main_representative = models.BooleanField(
+        default=False, 
+        verbose_name="Afficher en priorité dans le catalogue"
+    )
+    
     is_available = models.BooleanField(default=True, verbose_name="Disponible à la vente")
-    reorder_point = models.IntegerField(default=5, verbose_name="Seuil Critique de Commande")
-    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Date de Création")
-    modified_date = models.DateTimeField(auto_now=True, verbose_name="Dernière Modification")
+    reorder_point = models.IntegerField(default=5, verbose_name="Seuil Critique")
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Produit'
@@ -64,32 +69,44 @@ class Product(models.Model):
         ordering = ('-created_date',)
 
     def __str__(self):
+        if self.variant_label:
+            return f"{self.product_name} ({self.variant_label})"
         return self.product_name
 
-    def get_times_purchased(self):
-        from orders.models import OrderItem 
-        return OrderItem.objects.filter(product=self, is_ordered=True).count()
-        
-    def get_average_rating(self):
-        # Utilisation de l'import global fait en haut du fichier
-        return self.reviewandrating_set.filter(is_active=True).aggregate(average=Avg('rating'))['average'] or 0
+    def get_display_price(self):
+        """Calcule la fourchette de prix basée sur la famille (group_id)."""
+        if self.group_id:
+            family_prices = Product.objects.filter(
+                group_id=self.group_id, 
+                is_available=True
+            ).aggregate(min_p=Min('price'), max_p=Max('price'))
+            
+            min_p = family_prices['min_p']
+            max_p = family_prices['max_p']
 
-    @property
-    def supports_sizes(self):
-        """Retourne True si le produit gère des tailles.
-        Cette propriété est simplement un alias pour `has_size`,
-        mais facilite l'utilisation en template.
-        """
-        return self.has_size
+            if min_p is not None and max_p is not None:
+                if min_p == max_p:
+                    return f"{int(min_p)} MGA"
+                return f"{int(min_p)} - {int(max_p)} MGA"
+        
+        return f"{int(self.price)} MGA"
+
+    def get_family(self):
+        """Récupère tous les membres de la famille."""
+        if not self.group_id:
+            return Product.objects.filter(id=self.id)
+        return Product.objects.filter(group_id=self.group_id, is_available=True).order_by('price')
 
     def get_url(self):
         return reverse('store:product_detail', args=[self.category.slug, self.slug])
 
+    def get_average_rating(self):
+        # Utilise le related_name par défaut reviewandrating_set
+        return self.reviewandrating_set.filter(is_active=True).aggregate(average=Avg('rating'))['average'] or 0
 
 class ProductImage(models.Model):
-    """Galerie d'images redimensionnées."""
+    """Galerie d'images additionnelles pour le produit."""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='gallery')
-    # CORRECTION : Aussi sur la galerie pour les photos du téléphone
     image = ResizedImageField(
         size=[800, 800], 
         quality=75, 
@@ -103,19 +120,12 @@ class ProductImage(models.Model):
         verbose_name = 'Image de la Galerie'
         verbose_name_plural = 'Images de la Galerie'
 
-    def __str__(self):
-        return f"Image pour {self.product.product_name}"
-
 
 class ReviewAndRating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) 
-    rating = models.IntegerField(
-        blank=True, null=True, default=3,
-        validators=[MinValueValidator(1), MaxValueValidator(7)],
-        verbose_name='Note (sur 7 étoiles)'
-    )
-    review = models.TextField(max_length=500, blank=True, verbose_name='Commentaire')
+    rating = models.IntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(7)])
+    review = models.TextField(max_length=500, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -131,7 +141,6 @@ class ReviewAndRating(models.Model):
 
 class ReviewImage(models.Model):
     review = models.ForeignKey(ReviewAndRating, on_delete=models.CASCADE, related_name='images')
-    # CORRECTION : Redimensionnement aussi pour les avis clients (souvent des photos mobiles)
     image = ResizedImageField(
         size=[600, 600], 
         quality=70, 
@@ -143,6 +152,3 @@ class ReviewImage(models.Model):
     class Meta:
         verbose_name = "Image d'Avis"
         verbose_name_plural = "Images d'Avis"
-        
-    def __str__(self):
-        return f"Image pour l'avis #{self.review.id}"
