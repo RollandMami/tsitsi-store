@@ -111,20 +111,21 @@ def products_list_view(request, category_slug=None):
 
 # --- 3. DÉTAIL PRODUIT ---
 def product_detail_view(request, category_slug, product_slug):
-    # On récupère l'article spécifique (le "noeud")
+    # 1. On récupère le produit spécifique demandé
     product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
     
-    # La galerie est maintenant propre à CE produit spécifique
+    # 2. On récupère toute la famille via le group_id, en excluant le produit actuel
+    # On ne filtre PAS par is_available ici pour éviter que la liste disparaisse
+    variants = Product.objects.filter(
+        group_id=product.group_id
+    ).exclude(id=product.id).order_by('price') # Optionnel : trier par prix croissant
+    
     product_gallery = product.gallery.all()
-    
-    # On récupère la "famille" via la méthode du modèle
-    variants = product.get_family()
-    
     reviews = ReviewAndRating.objects.filter(product=product, is_active=True).order_by('-created_at')
     
     context = {
         'product': product,
-        'variants': variants, # On passe la famille au template
+        'variants': variants, 
         'product_gallery': product_gallery,
         'reviews': reviews,
         'review_form': ReviewForm(),
@@ -163,6 +164,8 @@ def submit_review(request, product_id):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Merci ! Votre avis a été mis à jour.')
+            else:
+                print(form.errors)
             return redirect(url)
         except ReviewAndRating.DoesNotExist:
             form = ReviewForm(request.POST)
@@ -172,6 +175,8 @@ def submit_review(request, product_id):
                 data.user_id = request.user.id
                 data.save()
                 messages.success(request, 'Avis publié.')
+            else:
+                print(form.errors)
             return redirect(url)
     return redirect(url)
 

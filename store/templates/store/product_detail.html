@@ -6,6 +6,124 @@
 
 {% block content %}
 <style>
+    /* Conteneur de scroll */
+    .variant-scroll-container {
+        max-height: 280px; /* Ajuste cette valeur selon la hauteur souhaitée */
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 5px; /* Espace pour ne pas coller à la barre */
+    }
+
+    /* Style de la scrollbar (Chrome, Safari, Edge) */
+    .variant-scroll-container::-webkit-scrollbar {
+        width: 6px; /* Très fine */
+    }
+
+    .variant-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .variant-scroll-container::-webkit-scrollbar-thumb {
+        background: #ccc; /* Couleur de la barre */
+        border-radius: 10px;
+    }
+
+    .variant-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #0d6efd; /* Devient bleue au survol */
+    }
+
+    /* Pour Firefox */
+    .variant-scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: #ccc #f1f1f1;
+    }
+
+    /* --- Rappel du style des cartes (pour cohérence) --- */
+    .variant-horizontal {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        margin-bottom: 4px; /* Petit espace entre les cartes */
+    }
+
+    .variant-horizontal.active {
+        border: 2px solid #198754;
+        background-color: #f8f9fa;
+        transform: none !important;
+        cursor: default;
+    }
+
+    a.variant-horizontal:hover {
+        border-color: #0d6efd;
+        background-color: #f0f7ff;
+        transform: translateX(5px);
+    }
+    
+    .variant-horizontal {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        cursor: pointer;
+    }
+
+    /* Effet au survol */
+    a.variant-horizontal:hover {
+        border-color: #0d6efd;
+        background-color: #f8fbff;
+        transform: translateX(5px);
+    }
+
+    /* Style si c'est l'option active */
+    .variant-horizontal.active {
+        border: 2px solid #198754; /* Bordure verte épaisse */
+        background-color: #f8f9fa; /* Fond neutre pour faire ressortir le contenu */
+        transform: none !important; /* Désactive tout mouvement */
+        box-shadow: none !important;
+        cursor: default;
+    }
+
+    /* Miniature Image */
+    .variant-img {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #f8f8f8;
+    }
+
+    .variant-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Détails (Centre) */
+    .variant-details {
+        flex-grow: 1;
+        padding-left: 15px;
+    }
+
+    /* Prix (Droite) */
+    .variant-price-tag {
+        font-weight: 800;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    .variant-horizontal.active .variant-price-tag {
+        color: #198754;
+    }
+    
     /* Galerie */
     .miniature-img { transition: all 0.2s ease; border: 2px solid transparent !important; cursor: pointer; }
     .miniature-img:hover, .active-mini { border-color: #0d6efd !important; transform: translateY(-2px); }
@@ -52,6 +170,41 @@
         color: #FFD700; /* Doré */
     }
 
+    /* Badge Stock style Photo 1 */
+    .badge-stock-custom {
+        background-color: #2ecc71; /* Vert vif */
+        color: white;
+        padding: 6px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Typographie du prix */
+    #price-display, h2 {
+        font-family: 'Arial Black', sans-serif; /* Pour un aspect plus massif */
+    }
+
+    /* Style des séparateurs (pipes) */
+    .border-start {
+        border-color: #dee2e6 !important;
+    }
+
+    /* Supprime le cadre gris autour des icônes d'étoiles */
+    .text-warning i, .rating-stars i, .star-item {
+        border: none !important;
+        text-decoration: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Si ce sont des étoiles vides (FontAwesome) */
+    .far.fa-star {
+        color: #e4e4e4; /* Un gris clair pour l'étoile elle-même, pas le cadre */
+    }
+
 </style>
 
 <div class="container py-5">
@@ -84,27 +237,39 @@
         
         {# --- INFOS & ACHAT --- #}
         <div class="col-lg-6">
+            {# --- TITRE --- #}
             <h1 class="display-5 fw-bold mb-2">{{ product.product_name }}</h1>
             
-            <div class="d-flex align-items-center mb-3">
+            {# --- RATING & STATS --- #}
+            <div class="d-flex align-items-center mb-3 text-muted small">
                 <div class="text-warning me-2">
-                    {% for i in "12345"|make_list %}
-                        <i class="fas fa-star {% if product.get_average_rating >= forloop.counter %}text-warning{% else %}text-light border-secondary{% endif %}"></i>
-                    {% endfor %}
+                    {% with avg=product.get_average_rating %}
+                        <i class="fas fa-star {% if avg >= 1 %}text-warning{% else %}text-light border{% endif %}"></i>
+                        <i class="fas fa-star {% if avg >= 2 %}text-warning{% else %}text-light border{% endif %}"></i>
+                        <i class="fas fa-star {% if avg >= 3 %}text-warning{% else %}text-light border{% endif %}"></i>
+                        <i class="fas fa-star {% if avg >= 4 %}text-warning{% else %}text-light border{% endif %}"></i>
+                        <i class="fas fa-star {% if avg >= 5 %}text-warning{% else %}text-light border{% endif %}"></i>
+                        <span class="ms-1 fw-bold text-dark">{{ avg|floatformat:1 }} / 5</span>
+                    {% endwith %}
                 </div>
-                <span class="text-muted small border-start ps-2">{{ reviews.count }} avis</span>
+                <span class="border-start ps-2 mx-2"><i class="fas fa-comment-alt me-1"></i> {{ reviews.count }} avis</span>
+                <span class="border-start ps-2"><i class="fas fa-shopping-bag me-1"></i> 1 achats</span> {# Ajuste avec ton champ ventes si dispo #}
             </div>
 
-            <h2 class="text-primary fw-bolder mb-4">
-                <span id="price-display">{{ product.price|floatformat:0|intcomma }}</span> 
-                <small class="fs-6">MGA</small>
+            {# --- PRIX --- #}
+            <h2 class="mb-4" style="color: #157347; font-weight: 800;">
+                {{ product.price|floatformat:0|intcomma }} <small>MGA</small>
             </h2>
-            
-            <div class="mb-4">
+
+            {# --- BADGE STOCK --- #}
+            <div class="d-flex align-items-center mb-4">
                 {% if product.stock > 0 %}
-                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2"><i class="fas fa-check-circle me-1"></i> En Stock</span>
+                    <span class="badge-stock-custom">
+                        <i class="fas fa-check-circle me-1"></i> En Stock
+                    </span>
+                    <span class="ms-2 text-muted small">({{ product.stock }} unités restantes)</span>
                 {% else %}
-                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2"><i class="fas fa-times-circle me-1"></i> Rupture</span>
+                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2">Rupture</span>
                 {% endif %}
             </div>
 
@@ -113,40 +278,49 @@
                     {% csrf_token %}
                     
                     {# SECTION VARIANTES (GROUP_ID) #}
-                    {% if variants %}
+                    {% if variants or product.group_id %}
                         <div class="mb-4">
-                            <label class="form-label fw-bold mb-3 text-primary">Choisir une option :</label>
-                            <div class="d-flex flex-column gap-3" id="variant-container">
+                            <label class="form-label fw-bold mb-3">Sélectionnez une option :</label>
+                            <div class="row g-2">
                                 
-                                {# 1. Le produit actuel #}
-                                <div class="variant-card p-3 border rounded-4 shadow-sm d-flex align-items-center justify-content-between active-card">
-                                    <div class="d-flex align-items-center">
-                                        <div class="custom-radio-circle me-3"></div>
-                                        <div>
-                                            <h6 class="mb-0 fw-bold text-dark">{{ product.variant_value|default:"Option actuelle" }}</h6>
-                                            <small class="text-success">Sélectionné</small>
+                                {# --- Produit Actuel --- #}
+                                <div class="col-12">
+                                    <div class="variant-horizontal active shadow-sm">
+                                        <div class="variant-img">
+                                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
                                         </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <span class="fw-bolder text-primary fs-5">{{ product.price|floatformat:0|intcomma }} MGA</span>
+                                        <div class="variant-details">
+                                            <h6 class="mb-0 fw-bold">
+                                                {{ product.product_name }}{% if product.variant_label %} - {{ product.variant_label }}{% endif %}
+                                            </h6>
+                                            <div class="badge bg-success mt-1">Option actuelle</div>
+                                        </div>
+                                        <div class="variant-price-tag">
+                                            {{ product.price|floatformat:0|intcomma }} <small>MGA</small>
+                                        </div>
                                     </div>
                                 </div>
-
-                                {# 2. Les autres produits de la même famille #}
-                                {% for variant in variants %}
-                                <a href="{{ variant.get_url }}" class="variant-card p-3 border rounded-4 shadow-sm d-flex align-items-center justify-content-between bg-white">
-                                    <div class="d-flex align-items-center">
-                                        <div class="custom-radio-circle me-3"></div>
-                                        <div>
-                                            <h6 class="mb-0 fw-bold text-dark">{{ variant.variant_value|default:"Autre option" }}</h6>
-                                            <small class="text-muted">Cliquez pour voir</small>
-                                        </div>
+                                <div class="variant-scroll-container">
+                                    {# --- Autres Variantes --- #}
+                                    {% for variant in variants %}
+                                    <div class="col-12">
+                                        <a href="{{ variant.get_url }}" class="variant-horizontal shadow-sm text-decoration-none">
+                                            <div class="variant-img">
+                                                <img src="{{ variant.images.url }}" alt="{{ variant.product_name }}">
+                                            </div>
+                                            <div class="variant-details text-dark">
+                                                <h6 class="mb-0 fw-bold">
+                                                    {{ variant.product_name }}{% if variant.variant_label %} - {{ variant.variant_label }}{% endif %}
+                                                </h6>
+                                                <small class="text-muted">Voir cette version</small>
+                                            </div>
+                                            <div class="variant-price-tag text-primary">
+                                                {{ variant.price|floatformat:0|intcomma }} <small>MGA</small>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <div class="text-end">
-                                        <span class="fw-bolder text-muted fs-5">{{ variant.price|floatformat:0|intcomma }} MGA</span>
-                                    </div>
-                                </a>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
 
                             </div>
                         </div>
@@ -189,38 +363,67 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Gestion Galerie
+        
+        // === 1. GESTION DE LA GALERIE ===
         const mainImg = document.getElementById('mainImage');
         const thumbnails = document.querySelectorAll('.miniature-img');
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', function() {
-                mainImg.src = this.src;
-                thumbnails.forEach(t => t.classList.remove('active-mini'));
-                this.classList.add('active-mini');
-            });
-        });
-    
-            // Gestion du système de notation (Review Rating)
-        const stars = document.querySelectorAll('.text-warning.me-2 i, .rating i'); // Ajuste le sélecteur selon tes classes
-
-        // Si tu as un formulaire d'avis avec des étoiles cliquables :
-        const ratingStars = document.querySelectorAll('.stars-input i'); // Remplace par ta classe réelle
-        ratingStars.forEach((star, index) => {
-            star.addEventListener('click', () => {
-                ratingStars.forEach((s, i) => {
-                    if (i <= index) {
-                        s.classList.replace('far', 'fas'); // étoile pleine
-                        s.classList.add('text-warning');
-                    } else {
-                        s.classList.replace('fas', 'far'); // étoile vide
-                        s.classList.remove('text-warning');
-                    }
+        
+        if (mainImg && thumbnails.length > 0) {
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    mainImg.src = this.src;
+                    thumbnails.forEach(t => t.classList.remove('active-mini'));
+                    this.classList.add('active-mini');
                 });
-                // Si tu as un input hidden pour stocker la note :
-                document.getElementById('rating-value').value = index + 1;
             });
-        });
-});
+        }
 
+        // === 2. GESTION DU SYSTÈME DE NOTATION (ÉTOILES) ===
+        const stars = document.querySelectorAll('.star-icon');
+        const ratingInput = document.getElementById('id_rating_value');
+
+        if (stars.length > 0 && ratingInput) {
+            stars.forEach(star => {
+                // Au clic sur une étoile
+                star.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    
+                    // On met à jour l'input caché pour Django
+                    ratingInput.value = value;
+
+                    // On met à jour le visuel des étoiles
+                    stars.forEach(s => {
+                        if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
+                            s.classList.remove('text-muted');
+                            s.classList.add('text-warning');
+                        } else {
+                            s.classList.remove('text-warning');
+                            s.classList.add('text-muted');
+                        }
+                    });
+                });
+
+                // Effet au survol (facultatif mais sympa)
+                star.addEventListener('mouseover', function() {
+                    this.style.transform = "scale(1.2)";
+                    this.style.transition = "transform 0.2s";
+                });
+                star.addEventListener('mouseout', function() {
+                    this.style.transform = "scale(1)";
+                });
+            });
+        }
+        
+        // === 3. VÉRIFICATION AVANT ENVOI DU FORMULAIRE ===
+        const reviewForm = document.querySelector('form[action*="submit_review"]');
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(e) {
+                if (!ratingInput.value || ratingInput.value === "0") {
+                    e.preventDefault();
+                    alert("Veuillez sélectionner une note avant de publier votre avis.");
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}

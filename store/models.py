@@ -74,11 +74,11 @@ class Product(models.Model):
         return self.product_name
 
     def get_display_price(self):
-        """Calcule la fourchette de prix basée sur la famille (group_id)."""
+        """Calcule la fourchette de prix basée sur les membres disponibles."""
         if self.group_id:
             family_prices = Product.objects.filter(
                 group_id=self.group_id, 
-                is_available=True
+                is_available=True # On garde ceci pour le prix affiché en boutique
             ).aggregate(min_p=Min('price'), max_p=Max('price'))
             
             min_p = family_prices['min_p']
@@ -89,13 +89,15 @@ class Product(models.Model):
                     return f"{int(min_p)} MGA"
                 return f"{int(min_p)} - {int(max_p)} MGA"
         
+        # Si aucune variante n'est dispo ou pas de group_id, on affiche le prix de l'objet lui-même
         return f"{int(self.price)} MGA"
 
     def get_family(self):
-        """Récupère tous les membres de la famille."""
+        """Récupère tous les membres de la famille, même ceux hors stock."""
         if not self.group_id:
             return Product.objects.filter(id=self.id)
-        return Product.objects.filter(group_id=self.group_id, is_available=True).order_by('price')
+        # On retire is_available=True pour ne pas casser l'affichage des variantes
+        return Product.objects.filter(group_id=self.group_id).order_by('price')
 
     def get_url(self):
         return reverse('store:product_detail', args=[self.category.slug, self.slug])
