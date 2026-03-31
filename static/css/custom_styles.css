@@ -337,3 +337,31 @@
 .bg-success { background-color: #2ecc71 !important; }
 .bg-warning { background-color: #f1c40f !important; }
 .bg-info { background-color: #3498db !important; }
+
+/* ============================================================
+   10. PARALAXE (Effet de profondeur sur les sections héroïques)
+   ============================================================ */
+/* Style pour l'effet parallaxe */
+.parallax-hero {
+    /* On récupère le chemin de l'image via Django ou un chemin relatif */
+    background-image: url('../img/hero_background.jpg'); 
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    
+    /* L'élément clé pour l'effet fixe */
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    
+    /* Optionnel : assure une transition fluide si l'image charge lentement */
+    background-color: #333; 
+}
+
+/* IMPORTANT : Désactiver sur mobile car 'background-attachment: fixed' 
+   provoque souvent des bugs d'affichage ou de zoom sur iOS/Android */
+@media (max-width: 768px) {
+    .parallax-hero {
+        background-attachment: scroll;
+        height: 400px; /* On réduit un peu la hauteur sur mobile */
+    }
+}

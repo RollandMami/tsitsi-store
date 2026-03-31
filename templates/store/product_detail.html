@@ -206,7 +206,6 @@
     }
 
 </style>
-
 <div class="container py-5">
     {# --- FIL D'ARIANE --- #}
     <nav aria-label="breadcrumb" class="mb-4">
@@ -225,11 +224,11 @@
             </div>
             <div class="row row-cols-auto g-2 justify-content-center">
                 <div class="col">
-                    <img src="{{ product.images.url }}" class="img-thumbnail miniature-img active-mini" style="width: 80px; height: 80px; object-fit: cover;">
+                    <img src="{{ product.images.url }}" class="img-thumbnail miniature-img active-mini" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;">
                 </div>
                 {% for image in product_gallery %}
                 <div class="col">
-                    <img src="{{ image.image.url }}" class="img-thumbnail miniature-img" style="width: 80px; height: 80px; object-fit: cover;">
+                    <img src="{{ image.image.url }}" class="img-thumbnail miniature-img" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;">
                 </div>
                 {% endfor %}
             </div>
@@ -237,95 +236,75 @@
         
         {# --- INFOS & ACHAT --- #}
         <div class="col-lg-6">
-            {# --- TITRE --- #}
             <h1 class="display-5 fw-bold mb-2">{{ product.product_name }}</h1>
             
-            {# --- RATING & STATS --- #}
+            {# --- RATING --- #}
             <div class="d-flex align-items-center mb-3 text-muted small">
                 <div class="text-warning me-2">
                     {% with avg=product.get_average_rating %}
-                        <i class="fas fa-star {% if avg >= 1 %}text-warning{% else %}text-light border{% endif %}"></i>
-                        <i class="fas fa-star {% if avg >= 2 %}text-warning{% else %}text-light border{% endif %}"></i>
-                        <i class="fas fa-star {% if avg >= 3 %}text-warning{% else %}text-light border{% endif %}"></i>
-                        <i class="fas fa-star {% if avg >= 4 %}text-warning{% else %}text-light border{% endif %}"></i>
-                        <i class="fas fa-star {% if avg >= 5 %}text-warning{% else %}text-light border{% endif %}"></i>
+                        {% for i in "12345" %}
+                            <i class="fas fa-star {% if avg >= forloop.counter|add:0 %}text-warning{% else %}text-secondary opacity-25{% endif %}"></i>
+                        {% endfor %}
                         <span class="ms-1 fw-bold text-dark">{{ avg|floatformat:1 }} / 5</span>
                     {% endwith %}
                 </div>
                 <span class="border-start ps-2 mx-2"><i class="fas fa-comment-alt me-1"></i> {{ reviews.count }} avis</span>
-                <span class="border-start ps-2"><i class="fas fa-shopping-bag me-1"></i> 1 achats</span> {# Ajuste avec ton champ ventes si dispo #}
             </div>
 
-            {# --- PRIX --- #}
             <h2 class="mb-4" style="color: #157347; font-weight: 800;">
                 {{ product.price|floatformat:0|intcomma }} <small>MGA</small>
             </h2>
 
-            {# --- BADGE STOCK --- #}
-            <div class="d-flex align-items-center mb-4">
-                {% if product.stock > 0 %}
-                    <span class="badge-stock-custom">
-                        <i class="fas fa-check-circle me-1"></i> En Stock
-                    </span>
-                    <span class="ms-2 text-muted small">({{ product.stock }} unités restantes)</span>
-                {% else %}
-                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2">Rupture</span>
-                {% endif %}
-            </div>
+            {# --- SECTION VARIANTES (Sortie du bloc stock pour rester visible) --- #}
+            {% if variants or product.group_id %}
+            <div class="mb-4">
+                <label class="form-label fw-bold mb-3">Options disponibles :</label>
+                <div class="row g-2">
+                    {# Produit Actuel #}
+                    <div class="col-12 mb-2">
+                        <div class="variant-horizontal active shadow-sm {% if product.stock <= 0 %}opacity-75{% endif %}">
+                            <div class="variant-img">
+                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                            </div>
+                            <div class="variant-details">
+                                <h6 class="mb-0 fw-bold">{{ product.variant_label|default:product.product_name }}</h6>
+                                {% if product.stock > 0 %}
+                                    <div class="badge bg-success mt-1">Sélectionné</div>
+                                {% else %}
+                                    <div class="badge bg-danger mt-1">Épuisé</div>
+                                {% endif %}
+                            </div>
+                            <div class="variant-price-tag">{{ product.price|floatformat:0|intcomma }} MGA</div>
+                        </div>
+                    </div>
 
+                    {# Autres Variantes #}
+                    {% for variant in variants %}
+                    <div class="col-12">
+                        <a href="{{ variant.get_url }}" class="variant-horizontal shadow-sm text-decoration-none {% if variant.stock <= 0 %}opacity-50{% endif %}">
+                            <div class="variant-img">
+                                <img src="{{ variant.images.url }}" alt="{{ variant.product_name }}">
+                            </div>
+                            <div class="variant-details text-dark">
+                                <h6 class="mb-0 fw-bold">{{ variant.variant_label|default:variant.product_name }}</h6>
+                                {% if variant.stock <= 0 %}
+                                    <small class="text-danger">Hors stock</small>
+                                {% else %}
+                                    <small class="text-muted">Disponible</small>
+                                {% endif %}
+                            </div>
+                            <div class="variant-price-tag text-primary">{{ variant.price|floatformat:0|intcomma }} MGA</div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {# --- FORMULAIRE D'AJOUT (Uniquement si stock > 0) --- #}
             {% if product.stock > 0 %}
                 <form action="{% url 'cart:add_cart' product.id %}" method="POST" class="p-4 border rounded-3 bg-light shadow-sm">
                     {% csrf_token %}
-                    
-                    {# SECTION VARIANTES (GROUP_ID) #}
-                    {% if variants or product.group_id %}
-                        <div class="mb-4">
-                            <label class="form-label fw-bold mb-3">Sélectionnez une option :</label>
-                            <div class="row g-2">
-                                
-                                {# --- Produit Actuel --- #}
-                                <div class="col-12">
-                                    <div class="variant-horizontal active shadow-sm">
-                                        <div class="variant-img">
-                                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
-                                        </div>
-                                        <div class="variant-details">
-                                            <h6 class="mb-0 fw-bold">
-                                                {{ product.product_name }}{% if product.variant_label %} - {{ product.variant_label }}{% endif %}
-                                            </h6>
-                                            <div class="badge bg-success mt-1">Option actuelle</div>
-                                        </div>
-                                        <div class="variant-price-tag">
-                                            {{ product.price|floatformat:0|intcomma }} <small>MGA</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="variant-scroll-container">
-                                    {# --- Autres Variantes --- #}
-                                    {% for variant in variants %}
-                                    <div class="col-12">
-                                        <a href="{{ variant.get_url }}" class="variant-horizontal shadow-sm text-decoration-none">
-                                            <div class="variant-img">
-                                                <img src="{{ variant.images.url }}" alt="{{ variant.product_name }}">
-                                            </div>
-                                            <div class="variant-details text-dark">
-                                                <h6 class="mb-0 fw-bold">
-                                                    {{ variant.product_name }}{% if variant.variant_label %} - {{ variant.variant_label }}{% endif %}
-                                                </h6>
-                                                <small class="text-muted">Voir cette version</small>
-                                            </div>
-                                            <div class="variant-price-tag text-primary">
-                                                {{ variant.price|floatformat:0|intcomma }} <small>MGA</small>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-
-                            </div>
-                        </div>
-                    {% endif %}
-
                     <div class="row g-2">
                         <div class="col-md-4">
                             <label class="form-label small fw-bold">Quantité</label>
@@ -333,11 +312,16 @@
                         </div>
                         <div class="col-md-8 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary btn-lg w-100 shadow">
-                                <i class="fas fa-shopping-cart me-2 cart-icon-gold"></i> Ajouter au panier
+                                <i class="fas fa-shopping-cart me-2"></i> Ajouter au panier
                             </button>
                         </div>
                     </div>
                 </form>
+            {% else %}
+                <div class="alert alert-warning border-0 shadow-sm">
+                    <i class="fas fa-exclamation-triangle me-2"></i> 
+                    Ce modèle est actuellement indisponible. Veuillez choisir une autre option ci-dessus.
+                </div>
             {% endif %}
         </div>
     </div>
@@ -360,7 +344,6 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         

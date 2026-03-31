@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import CustomUser
-from django.db.models import Avg, Min, Max
+from django.db.models import Avg, Min, Max, Sum
 
 # Import pour le redimensionnement automatique
 from django_resized import ResizedImageField
@@ -74,11 +74,12 @@ class Product(models.Model):
         return self.product_name
 
     def get_display_price(self):
-        """Calcule la fourchette de prix basée sur les membres disponibles."""
+        """Calcule la fourchette de prix basée sur les membres EN STOCK."""
         if self.group_id:
             family_prices = Product.objects.filter(
                 group_id=self.group_id, 
-                is_available=True # On garde ceci pour le prix affiché en boutique
+                stock__gt=0,       # On ne montre que les prix des produits achetables
+                is_available=True
             ).aggregate(min_p=Min('price'), max_p=Max('price'))
             
             min_p = family_prices['min_p']
@@ -88,6 +89,8 @@ class Product(models.Model):
                 if min_p == max_p:
                     return f"{int(min_p)} MGA"
                 return f"{int(min_p)} - {int(max_p)} MGA"
+        
+        return f"{int(self.price)} MGA"
         
         # Si aucune variante n'est dispo ou pas de group_id, on affiche le prix de l'objet lui-même
         return f"{int(self.price)} MGA"
@@ -101,7 +104,20 @@ class Product(models.Model):
 
     def get_url(self):
         return reverse('store:product_detail', args=[self.category.slug, self.slug])
-
+    
+# --- NOUVELLE MÉTHODE DE VÉRIFICATION DE GROUPE ---
+    def is_group_out_of_stock(self):
+        """
+        Vérifie si TOUS les membres du groupe sont en rupture.
+        Renvoie True uniquement si le stock total de la famille est 0.
+        """
+        if self.group_id:
+            total_stock = Product.objects.filter(group_id=self.group_id).aggregate(total=Sum('stock'))['total']
+            return (total_stock or 0) <= 0
+        
+        # Si pas de groupe, on check juste le stock de l'article seul
+        return self.stock <= 0
+    
     def get_average_rating(self):
         # Utilise le related_name par défaut reviewandrating_set
         return self.reviewandrating_set.filter(is_active=True).aggregate(average=Avg('rating'))['average'] or 0

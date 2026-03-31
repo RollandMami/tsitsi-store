@@ -11,13 +11,12 @@
 
 {% block content %}
 <main>
-    {# Hero Section #}
-    <div class="p-5 text-center bg-image" 
-         style="background-image: url('{% static 'img/hero_background.jpg' %}'); height: 500px; background-size: cover; background-position: center;">
+    {# Hero Section avec effet Parallaxe CSS #}
+    <div class="p-5 text-center bg-image parallax-hero">
         <div class="mask h-100 d-flex justify-content-center align-items-center" style="background-color: rgba(0, 0, 0, 0.5);">
             <div class="text-white px-3">
-                <h1 class="mb-3 display-3 fw-bold">Importation depuis la chine</h1>
-                <h4 class="mb-4 fw-light">Le plaisir de decouvrir, le bonheur de s'offrir</h4>
+                <h1 class="mb-3 display-3 fw-bold">Importation depuis la Chine</h1>
+                <h4 class="mb-4 fw-light">Le plaisir de découvrir, le bonheur de s'offrir</h4>
                 <a class="btn btn-primary btn-lg px-5 py-3 shadow" href="{% url 'store:catalogue' %}" role="button">
                     Explorer la Boutique <i class="fas fa-arrow-right ms-2"></i>
                 </a>
@@ -119,6 +118,11 @@
                             <a href="{{ product.get_url }}">
                                 <img src="{{ product.images.url }}" class="w-100 h-100" alt="{{ product.product_name }}" style="object-fit: contain; padding: 15px;">
                             </a>
+                            
+                            {# Nouveau Badge Rupture intelligent #}
+                            {% if product.is_group_out_of_stock %}
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-3 shadow-sm" style="font-size: 0.7rem;">Rupture totale</span>
+                            {% endif %}
                         </div>
 
                         <div class="card-body d-flex flex-column p-3">
@@ -132,28 +136,30 @@
                             
                             <div class="mt-auto">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    {# Utilisation du prix dynamique (fourchette si group_id existe) #}
+                                    {# Fourchette de prix dynamique basée sur le stock disponible #}
                                     <p class="h6 text-success fw-bold mb-0">{{ product.get_display_price }}</p>
-                                    
-                                    {% if product.stock == 0 %}
-                                        <span class="badge bg-danger" style="font-size: 0.6rem;">Rupture</span>
-                                    {% endif %}
                                 </div>
                             
-                                {# LOGIQUE DES BOUTONS MISE À JOUR #}
+                                {# LOGIQUE DES BOUTONS OPTIMISÉE #}
                                 {% if product.group_id %}
-                                    {# S'il y a un group_id, c'est une famille -> Voir options #}
-                                    <a href="{{ product.get_url }}" class="btn btn-outline-primary w-100 py-2 shadow-sm fw-bold btn-sm">
-                                        <i class="fa-solid fa-eye me-2"></i> Voir options
-                                    </a>
-                                {% elif product.stock > 0 %}
-                                    {# Produit unique avec stock #}
-                                    <a href="{% url 'cart:add_cart' product.id %}" class="btn btn-primary w-100 py-2 shadow-sm fw-bold btn-sm">
-                                        <i class="fa-solid fa-cart-plus me-2"></i> Ajouter
-                                    </a>
+                                    {% if product.is_group_out_of_stock %}
+                                        {# Toute la famille est vide #}
+                                        <button class="btn btn-secondary w-100 py-2 btn-sm shadow-sm" disabled>Indisponible</button>
+                                    {% else %}
+                                        {# Au moins une variante est dispo -> On invite à voir les options #}
+                                        <a href="{{ product.get_url }}" class="btn btn-outline-primary w-100 py-2 shadow-sm fw-bold btn-sm">
+                                            <i class="fa-solid fa-layer-group me-2"></i> Voir options
+                                        </a>
+                                    {% endif %}
                                 {% else %}
-                                    {# Hors stock #}
-                                    <button class="btn btn-secondary w-100 py-2 btn-sm" disabled>Indisponible</button>
+                                    {# Produit unique sans variante #}
+                                    {% if product.stock > 0 %}
+                                        <a href="{% url 'cart:add_cart' product.id %}" class="btn btn-primary w-100 py-2 shadow-sm fw-bold btn-sm">
+                                            <i class="fa-solid fa-cart-plus me-2"></i> Ajouter
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-secondary w-100 py-2 btn-sm" disabled>Indisponible</button>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

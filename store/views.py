@@ -17,8 +17,7 @@ def is_superuser_or_staff(user):
 # --- 0. ACCUEIL ---
 def home(request):
     # On affiche uniquement les représentants principaux pour éviter les doublons
-    products = Product.objects.filter(
-        is_available=True, 
+    products = Product.objects.filter( 
         is_main_representative=True
     ).order_by('-created_date')[:8]
     
@@ -76,7 +75,6 @@ def products_list_view(request, category_slug=None):
     # FILTRE CRITIQUE : On ne prend que les 'is_main_representative' 
     # pour ne pas voir 5 fois le même carnet de couleurs différentes.
     all_available = Product.objects.filter(
-        is_available=True, 
         is_main_representative=True
     ).select_related('category')
     
@@ -133,8 +131,7 @@ def product_detail_view(request, category_slug, product_slug):
         'reviews': reviews,
         'review_form': ReviewForm(),
         'similar_products': Product.objects.filter(
-            category=product.category, 
-            is_available=True,
+            category=product.category,
             is_main_representative=True
         ).exclude(group_id=product.group_id)[:4],
     }
