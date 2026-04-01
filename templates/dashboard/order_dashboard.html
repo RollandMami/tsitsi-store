@@ -33,6 +33,24 @@
         }
     }
 
+    /* --- Style amélioré de la barre de recherche --- */
+    #orderSearchInput {
+        border-radius: 20px !important;
+        padding-left: 15px;
+        background-color: #fcfbf9;
+        transition: all 0.3s ease;
+    }
+
+    #orderSearchInput:focus {
+        background-color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
+        border-color: #0d6efd !important;
+    }
+
+    .input-group-text {
+        border-radius: 20px 0 0 20px !important;
+        background-color: #fcfbf9 !important;
+    }
     /* Cartes personnalisées */
     .custom-card {
         background-color: var(--beige-main) !important;
@@ -198,58 +216,7 @@
                             </tr>
                         </thead>
                         <tbody id="orderTableBody">
-                            {% for order in orders %}
-                            <tr>
-                                <td class="fw-bold" style="color: #0d6efd;">#{{ order.order_number }}</td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <span class="fw-bold">{{ order.first_name }} {{ order.last_name }}</span>
-                                        <small class="text-muted-soft">{{ order.phone }}</small>
-                                    </div>
-                                </td>
-                                <td class="fw-bold">{{ order.order_total|intcomma }} Ar</td>
-                                <td>
-                                    <select class="form-select form-select-sm border-0 bg-white shadow-sm status-select" 
-                                            data-order-id="{{ order.id }}" style="width: 130px; border-radius: 8px;">
-                                        <option value="New" {% if order.status == 'New' %}selected{% endif %}>Nouvelle</option>
-                                        <option value="Accepted" {% if order.status == 'Accepted' %}selected{% endif %}>Acceptée</option>
-                                        <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Terminée</option>
-                                        <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Annulée</option>
-                                    </select>
-                                </td>
-                                <td class="text-end">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <!-- Détails -->
-                                        <a href="{% url 'dashboard:order_details' order.id %}" 
-                                           class="btn btn-outline-primary" 
-                                           title="Voir les détails">
-                                            <i class="fas fa-eye"></i>
-                                            <span class="d-none d-md-inline ms-1">Détails</span>
-                                        </a>
-                                        
-                                        <!-- Facture -->
-                                        <a href="{% url 'dashboard:download_order_invoice' order.id %}" 
-                                           class="btn btn-outline-success" 
-                                           title="Télécharger la facture"
-                                           target="_blank">
-                                            <i class="fas fa-file-pdf"></i>
-                                            <span class="d-none d-md-inline ms-1">Facture</span>
-                                        </a>
-                                        
-                                        <!-- Suppression via formulaire POST (ouverture modale) -->
-                                        <form method="post" action="{% url 'dashboard:delete_order' order.id %}" class="d-inline delete-order-form">
-                                            {% csrf_token %}
-                                            <button type="button" class="btn btn-outline-danger btn-sm btn-trigger-delete" title="Supprimer la commande">
-                                                <i class="fas fa-trash"></i>
-                                                <span class="d-none d-md-inline ms-1">Supp.</span>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="5" class="text-center py-5">Aucune commande.</td></tr>
-                            {% endfor %}
+                            {% include 'dashboard/partials/order_list_partial.html' %}
                         </tbody>
                     </table>
                 </div>
@@ -341,18 +308,56 @@
 <script>
     // 1. RECHERCHE AJAX (input dans le header)
     const searchInput = document.getElementById('orderSearchInput');
+    const tableBody = document.getElementById('orderTableBody');
+    let searchTimeout;
+
     if (searchInput) {
-        searchInput.addEventListener('keyup', function(e) {
-            fetch(`?q=${encodeURIComponent(e.target.value)}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' }})
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('orderTableBody').innerHTML = data.html;
-                // réinitialiser le changement de statut après remplacement
-                initStatusChange();
-            });
+        searchInput.addEventListener('input', function(e) {
+            const query = e.target.value;
+
+            // On attend 300ms après la dernière touche pour envoyer la requête (Debounce)
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                
+                // On ajoute un effet visuel de chargement
+                tableBody.classList.add('loading-fade');
+
+                fetch(`?q=${encodeURIComponent(query)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Erreur serveur');
+                    return res.json();
+                })
+                .then(data => {
+                    // On remplace le contenu du tableau
+                    tableBody.innerHTML = data.html;
+                    
+                    // On retire l'effet de chargement
+                    tableBody.classList.remove('loading-fade');
+
+                    // TRÈS IMPORTANT : On ré-initialise les événements sur les nouveaux éléments
+                    initStatusChange(); 
+                    initDeleteButtons(); 
+                })
+                .catch(err => {
+                    console.error('Erreur recherche:', err);
+                    tableBody.classList.remove('loading-fade');
+                });
+            }, 300);
         });
     }
 
+    // Fonction pour ré-initialiser les boutons de suppression après une recherche AJAX
+    function initDeleteButtons() {
+        const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        document.querySelectorAll('.btn-trigger-delete').forEach(btn => {
+            btn.onclick = function() {
+                window.formToSubmit = this.closest('form');
+                deleteModal.show();
+            };
+        });
+    }
 
     // 2. CHANGEMENT DE STATUT SANS RECHARGEMENT
     function initStatusChange() {

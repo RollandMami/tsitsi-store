@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponse
 from django.db.models import Sum, F, Q, Case, When, IntegerField, Count
 from django.contrib import messages
 from django.template.loader import render_to_string
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 
 # Imports des modèles locaux
 from store.models import Product, Category
@@ -131,53 +133,87 @@ def delete_product_inline(request, pk):
 
 @user_passes_test(is_admin)
 def order_dashboard(request):
-    """ Liste et suivi des commandes """
+    """ Liste et suivi des commandes avec support AJAX pour la recherche """
+    
+    # 1. Récupération de la recherche 'q'
+    query = request.GET.get('q', '').strip()
+    
+    # 2. Filtrage de base
     orders = Order.objects.all().order_by('-created')
+    
+    # 3. Application de la recherche si 'q' existe
+    if query:
+        orders = orders.filter(
+            Q(order_number__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(phone__icontains=query)
+        )
+
+    # 4. Détection de la requête AJAX (Barre de recherche)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # On rend uniquement les lignes du tableau
+        html = render_to_string('dashboard/partials/_order_table_rows.html', {'orders': orders}, request=request)
+        return JsonResponse({'html': html})
+
+    # 5. Contexte normal pour le chargement de la page
     context = {
         'orders': orders,
-        'pending_count': orders.filter(status='New').count(),
-        'total_revenue': orders.filter(paid=True).aggregate(Sum('order_total'))['order_total__sum'] or 0
+        'orders_pending_count': orders.filter(status='New').count(),
+        'orders_cancelled_count': orders.filter(status='Cancelled').count(),
+        'total_orders_count': Order.objects.count(),
+        # Calcul du CA (ajuste selon ta logique de date si besoin)
+        'daily_revenue': Order.objects.filter(paid=True).aggregate(Sum('order_total'))['order_total__sum'] or 0,
     }
+    
     return render(request, 'dashboard/order_dashboard.html', context)
-
 
 @user_passes_test(is_admin)
 def update_order_status(request, order_id):
-    """ Change le statut (New, Accepted, Completed, Cancelled) """
-    order = get_object_or_404(Order, id=order_id)
+    """ Met à jour le statut via AJAX ou POST classique """
     if request.method == 'POST':
-        order.status = request.POST.get('status')
+        order = get_object_or_404(Order, id=order_id)
+        new_status = request.POST.get('status')
+        order.status = new_status
         order.save()
-        # Si la requête vient de Fetch (AJAX)
+
+        # IMPORTANT : Réponse JSON pour éviter l'erreur "Unexpected token <"
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
-                'success': True,
-                'message': f"Statut de la commande #{order.order_number} mis à jour en '{order.status}'."
+                'status': 'success', 
+                'message': f'Statut de la commande #{order.order_number} mis à jour.'
             })
         
-        # Si c'est un formulaire classique (sans JS)
-        messages.success(request, f"Statut commande #{order.order_number} mis à jour.")
-        return redirect('dashboard:order_dashboard')
+        return redirect('dashboard:order_details', order_id=order.id)
     
 @user_passes_test(is_admin)
 def download_order_invoice(request, order_id):
-    """ Génération simple de facture (PDF ou HTML) """
     order = get_object_or_404(Order, id=order_id)
-    order_products = OrderItem.objects.filter(order=order)
-    context = {'order': order, 'order_products': order_products}
-    return render(request, 'dashboard/invoice_pdf_template.html', context)
+    order_items = order.items.all() 
+
+    local_now = timezone.localtime(timezone.now())
+
+    # 3. Le dictionnaire context complet
+    context = {
+        'order': order,
+        'order_items': order_items,    # Pour remplir le tableau des produits
+        'tax_rate': 20,                # Utilisé pour le calcul de la TVA
+        'subtotal': order.get_subtotal_ht, # Utilise ta propriété de modèle
+        'now': local_now,              # Date et heure locale pour la facture
+    }
+    
+    return render(request, 'dashboard/invoice_template.html', context)
 
 @user_passes_test(is_admin)
 def order_details(request, order_id):
-    """ Vue détaillée d'une commande spécifique """
+    """ Affiche les détails d'une commande spécifique """
     order = get_object_or_404(Order, id=order_id)
+    # On récupère les articles liés à cette commande
     order_items = OrderItem.objects.filter(order=order)
-    subtotal = order_items.aggregate(total=Sum(F('product_price') * F('quantity')))['total'] or 0
-    
+
     context = {
         'order': order,
         'order_items': order_items,
-        'subtotal': subtotal,
     }
     return render(request, 'dashboard/order_details.html', context)
 
