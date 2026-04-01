@@ -20,7 +20,7 @@ dist/
 /media/
 
 # Fichiers statiques collectés pour le déploiement (collectstatic)
-/static/
+/static_files/
 
 #Environnement Virtuel
 venv/
