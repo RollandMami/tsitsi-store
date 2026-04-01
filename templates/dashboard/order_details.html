@@ -252,23 +252,29 @@
         fetch(url, {
           method: 'POST',
           headers: {
-            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+            'X-Requested-With': 'XMLHttpRequest'
           },
           body: formData
         })
-          .then(response => response.json())
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Erreur serveur (Code: " + response.status + ")");
+            }
+            return response.json();
+          })
           .then(data => {
             submitBtn.disabled = false;
             // afficher le message dans la modal
             const body = document.getElementById('statusModalBody');
-            body.textContent = data.message || 'Réponse reçue';
+            body.textContent = data.message || 'Statut mis à jour avec succès !';
             const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
             statusModal.show();
           })
           .catch(err => {
             submitBtn.disabled = false;
             const body = document.getElementById('statusModalBody');
-            body.textContent = 'Erreur réseau, veuillez réessayer.';
+            body.textContent = 'Erreur :' + err.message;
             const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
             statusModal.show();
           });

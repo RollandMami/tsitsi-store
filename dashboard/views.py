@@ -75,16 +75,21 @@ def stock_dashboard(request):
 def dashboard_products(request):
     """ Liste des produits avec recherche AJAX """
     query = request.GET.get('q', '')
+    categories = Category.objects.all()
     products = Product.objects.all().select_related('category').order_by('-created_date')
     
     if query:
         products = products.filter(Q(product_name__icontains=query) | Q(category__name__icontains=query))
-    
+    context = {
+        'products': products,
+        'categories': categories,  # <--- CETTE LIGNE EST CRUCIALE
+        'title': 'Gestion Produits'
+    }
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('dashboard/partials/product_table_results.html', {'products': products})
+        html = render_to_string('dashboard/partials/product_table_results.html', context)
         return JsonResponse({'html': html, 'count': products.count()})
         
-    return render(request, 'dashboard/products.html', {'products': products, 'title': 'Gestion Produits'})
+    return render(request, 'dashboard/products.html', context)
 
 @user_passes_test(is_admin)
 def update_stock_ajax(request):
@@ -143,9 +148,17 @@ def update_order_status(request, order_id):
     if request.method == 'POST':
         order.status = request.POST.get('status')
         order.save()
+        # Si la requête vient de Fetch (AJAX)
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': f"Statut de la commande #{order.order_number} mis à jour en '{order.status}'."
+            })
+        
+        # Si c'est un formulaire classique (sans JS)
         messages.success(request, f"Statut commande #{order.order_number} mis à jour.")
-    return redirect('dashboard:order_dashboard')
-
+        return redirect('dashboard:order_dashboard')
+    
 @user_passes_test(is_admin)
 def download_order_invoice(request, order_id):
     """ Génération simple de facture (PDF ou HTML) """
@@ -157,16 +170,16 @@ def download_order_invoice(request, order_id):
 @user_passes_test(is_admin)
 def order_details(request, order_id):
     """ Vue détaillée d'une commande spécifique """
-    order = get_object_or_404(Order, order_number=order_id)
+    order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order)
-    subtotal = sum(item.product_price * item.quantity for item in order_items)
+    subtotal = order_items.aggregate(total=Sum(F('product_price') * F('quantity')))['total'] or 0
     
     context = {
         'order': order,
         'order_items': order_items,
         'subtotal': subtotal,
     }
-    return render(request, 'dashboard/order_detail.html', context)
+    return render(request, 'dashboard/order_details.html', context)
 
 @user_passes_test(is_admin)
 def delete_order(request, order_id):
