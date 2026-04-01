@@ -8,22 +8,6 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'store/css/search.css' %}">
-    <style>
-        .product-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
-        .img-container { position: relative; overflow: hidden; height: 200px; background-color: #f8f9fa; }
-        .img-container img { object-fit: contain; height: 100%; width: 100%; padding: 10px; }
-        .btn-overlay { 
-            position: absolute; bottom: -50px; left: 0; right: 0; 
-            transition: all 0.3s ease; background: rgba(13, 110, 253, 0.9); 
-            color: white; text-align: center; padding: 8px; text-decoration: none;
-        }
-        .product-card:hover .btn-overlay { bottom: 0; }
-        .product-title-limit { 
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
-            overflow: hidden; height: 2.4em; line-height: 1.2em;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}

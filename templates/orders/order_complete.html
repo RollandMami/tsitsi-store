@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commande Confirmée{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-success">
+                <div class="card-header bg-success text-white text-center py-3">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h2 class="h4 mb-0">COMMANDE RÉUSSIE !</h2>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    <p class="lead text-center mb-4">Merci pour votre achat ! Votre commande a été enregistrée.</p>
+                    
+                    <div class="alert alert-info text-center">
+                        <h4 class="alert-heading">Numéro de Commande : <span class="fw-bold">{{ order.order_number }}</span></h4>
+                        <p class="mb-0">Nous vous avons envoyé une confirmation par email à **{{ order.email }}**.</p>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6 border-end">
+                            <h5 class="fw-bold text-primary"><i class="fas fa-map-marker-alt me-2"></i> Livraison</h5>
+                            <address>
+                                **{{ order.full_name }}**<br>
+                                {{ order.address_line_1 }} {% if order.address_line_2 %}({{ order.address_line_2 }}){% endif %}<br>
+                                {{ order.city }}, {{ order.state }}, {{ order.country }}
+                            </address>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold text-primary"><i class="fas fa-calendar-alt me-2"></i> Détails</h5>
+                            <p>
+                                **Date de la commande :** {{ order.created|date:"d F Y" }}<br>
+                                **Statut :** <span class="badge bg-secondary">{{ order.get_status_display }}</span><br>
+                                **Total payé :** <span class="fw-bold text-success">{{ order.order_total|floatformat:2 }} MGA</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+
+                    <h5 class="fw-bold mb-3">Articles Commandés :</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th class="text-center">Quantité</th>
+                                    <th class="text-end">Prix Unitaire</th>
+                                    <th class="text-end">Sous-Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                <tr>
+                                    <td><a href="{{ item.product.get_url }}" class="text-dark">{{ item.product.product_name }}</a></td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-end">{{ item.product_price|floatformat:2 }} MGA</td>
+                                    <td class="text-end fw-bold">{{ item.sub_total|floatformat:2 }} MGA</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Sous-Total</th>
+                                    <th class="text-end">{{ sub_total|floatformat:2 }} MGA</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-end">Taxe (TVA)</th>
+                                    <th class="text-end">{{ order.tax|floatformat:2 }} MGA</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total Final</th>
+                                    <th class="text-end text-success h5">{{ order.order_total|floatformat:2 }} MGA</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

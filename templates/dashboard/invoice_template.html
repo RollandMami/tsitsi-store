@@ -3,40 +3,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <style>
-        @page { size: A4; margin: 1cm; }
-        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; font-size: 12px; }
-        
-        /* Layout par table pour compatibilité PDF maximale */
-        .header-table, .client-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        
-        .invoice-title { font-size: 28px; color: #0d6efd; font-weight: bold; }
-        .text-right { text-align: right; }
-        .text-blue { color: #0d6efd; }
-        
-        /* Table des articles */
-        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .items-table th { 
-            background-color: #f8f9fa; 
-            color: #0d6efd; 
-            padding: 10px; 
-            border-bottom: 2px solid #0d6efd; 
-            text-align: left;
-            text-transform: uppercase;
-            font-size: 10px;
-        }
-
-        .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
-
-        /* Totaux */
-        .totals-container { width: 100%; }
-        .totals-table { width: 250px; margin-left: auto; border-collapse: collapse; }
-        .totals-table td { padding: 8px 5px; border-bottom: 1px solid #ddd; }
-        .total-row { background-color: #0d6efd; color: white; font-weight: bold; font-size: 14px; }
-        .total-row td { border: none !important; }
-
-        .footer { text-align: center; font-size: 10px; color: #777; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
-    </style>
+    <link rel="stylesheet" href="{% static 'dashboard/css/invoice_template.css' %}">
 </head>
 <body>
     

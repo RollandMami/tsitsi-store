@@ -6,39 +6,6 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/dashboard_products.css' %}">
-<style>
-    /* Design Tsitsi Store */
-    .custom-card {
-        background-color: #F9F7F2 !important; 
-        border: 1px solid #E9E4D9 !important;
-        border-radius: 20px;
-    }
-    
-    .search-container .input-group {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid #E9E4D9;
-        transition: all 0.3s ease;
-    }
-
-    .search-container .input-group:focus-within {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
-    }
-
-    .table-light {
-        background-color: #F1EDE3 !important;
-        color: #8B8579 !important;
-    }
-
-    #product-count {
-        background-color: #0d6efd;
-        color: white !important;
-        font-size: 0.8rem;
-    }
-
-    .loading-fade { opacity: 0.5; transition: opacity 0.2s; }
-</style>
 {% endblock %}
 
 {% block dashboard_content %}
@@ -113,48 +80,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('ajax-search');
-        const resultsTable = document.getElementById('product-table-body');
-        const searchIcon = document.getElementById('search-icon');
-        const badge = document.getElementById('product-count');
-        let timeout = null;
-
-        if (searchInput) {
-            searchInput.addEventListener('keyup', function() {
-                // Annule le timer précédent (Debounce)
-                clearTimeout(timeout);
-                
-                timeout = setTimeout(() => {
-                    const query = searchInput.value;
-                    
-                    // Indicateur visuel de chargement
-                    resultsTable.classList.add('loading-fade');
-                    searchIcon.className = 'fas fa-spinner fa-spin';
-
-                    fetch(`{% url 'dashboard:products' %}?q=${query}`, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        resultsTable.innerHTML = data.html;
-                        if (badge) badge.innerText = data.count;
-                        
-                        // Réinitialise les indicateurs
-                        resultsTable.classList.remove('loading-fade');
-                        searchIcon.className = 'fas fa-search';
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        searchIcon.className = 'fas fa-search';
-                    });
-                }, 300); // 300ms de délai
-            });
-        }
-    });
-
-    const CSRF_TOKEN = '{{ csrf_token }}';
-</script>
 <script src="{% static 'dashboard/js/dashboard_products.js' %}"></script>
 {% endblock %}

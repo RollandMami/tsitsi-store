@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Paiement et Adresse{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <h1 class="display-5 fw-bold mb-5 text-center">
+        <i class="fas fa-truck-loading me-3 text-primary"></i> Finaliser la Commande
+    </h1>
+    
+    <form action="{% url 'orders:place_order' %}" method="POST">
+        {% csrf_token %}
+
+        <div class="row g-5">
+            
+            <div class="col-lg-7">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white fw-bold">
+                        <i class="fas fa-map-marked-alt me-2"></i> Adresses et Contact
+                    </div>
+                    <div class="card-body">
+                        
+                        <h4 class="mb-3">Informations Personnelles</h4>
+                        <div class="row g-3">
+                            {% for field in order_form %}
+                                {% if field.name in "first_name,last_name,email,phone" %}
+                                    <div class="col-md-6">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                            <span class="text-danger small">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h4 class="mb-3">Adresse de Livraison</h4>
+                        <div class="row g-3">
+                            {% for field in order_form %}
+                                {% if field.name not in "first_name,last_name,email,phone" %}
+                                    <div class="col-md-{% if field.name == 'address_line_1' or field.name == 'address_line_2' %}12{% else %}4{% endif %}">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                            <span class="text-danger small">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                </div>
+            
+            <div class="col-lg-5">
+                <div class="card shadow-lg bg-light sticky-top" style="top: 20px;">
+                    <div class="card-header bg-success text-white fw-bold">
+                        <i class="fas fa-clipboard-list me-2"></i> Votre Récapitulatif
+                    </div>
+                    <div class="card-body">
+                        
+                        <ul class="list-group mb-3">
+                            {% for item in cart_items %}
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">{{ item.product.product_name }}</h6>
+                                    <small class="text-muted">{{ item.quantity }} x {{ item.product.price }} MGA</small>
+                                </div>
+                                <span class="text-muted fw-bold">{{ item.sub_total|floatformat:2 }} MGA</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Sous-Total</span>
+                                <strong>{{ sub_total|floatformat:2 }} MGA</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Taxes (TVA)</span>
+                                <strong>+ {{ tax|floatformat:2 }} MGA</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between text-success fw-bolder h4">
+                                <span>Total Final (TTC)</span>
+                                <strong>{{ grand_total|floatformat:2 }} MGA</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card-footer bg-white">
+                        <button class="btn btn-success btn-lg w-100" type="submit">
+                            <i class="fas fa-lock me-2"></i> Confirmer la Commande
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

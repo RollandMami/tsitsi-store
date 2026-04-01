@@ -1,6 +1,8 @@
 {% extends 'dashboard/base_dashboard.html' %}
 {% load static %}
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/user_form_dashboard.css' %}">
+{% endblock %}
 {% block dashboard_content %}
 <div class="container-fluid py-4">
   <div class="row">
@@ -224,39 +226,5 @@
     </div>
   </div>
 </div>
-
-<style>
-  .form-label {
-    font-weight: 500;
-    color: #2c3e50;
-  }
-  
-  .form-control:focus, 
-  .form-check-input:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-  }
-
-  .card {
-    border: none;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .card-header {
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-  }
-
-  @media (max-width: 768px) {
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    .btn-lg {
-      padding: 0.75rem 1rem;
-      font-size: 0.95rem;
-    }
-  }
-</style>
 
 {% endblock %}

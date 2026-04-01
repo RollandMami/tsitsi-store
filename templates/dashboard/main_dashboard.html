@@ -2,8 +2,10 @@
 {% load humanize %}
 {% load static %}
 
+{%block head%}
+    <link rel="stylesheet" href="{% static 'dashboard/css/main_dashboard.css' %}">
+{% endblock %}
 {% block title %}{{ title }}{% endblock %}
-
 {% block period_selector %}
 <div class="dropdown">
     <button class="btn btn-white shadow-sm border-0 dropdown-toggle" type="button" id="periodSelect" data-bs-toggle="dropdown" style="border-radius: 12px; padding: 10px 20px;">
@@ -157,78 +159,5 @@
     </div>
 </div>
 
-<style>
-    .bg-light-success { background-color: rgba(25, 135, 84, 0.1); }
-    .bg-light-primary { background-color: rgba(13, 110, 253, 0.1); }
-    .bg-light-warning { background-color: rgba(255, 193, 7, 0.1); }
-    .bg-light-info { background-color: rgba(13, 202, 240, 0.1); }
-    .bg-success-soft { background-color: rgba(25, 135, 84, 0.15); }
-    .bg-warning-soft { background-color: rgba(255, 193, 7, 0.15); }
-    .bg-danger-soft { background-color: rgba(220, 53, 69, 0.15); }
-    .rounded-4 { border-radius: 12px; }
-
-    /* Style commun pour toutes les cartes (KPI, Graphiques, Tableaux) */
-    .custom-card {
-        background-color: #F9F7F2 !important; /* Beige crème doux */
-        border: 1px solid #E9E4D9 !important; /* Bordure assortie */
-        border-radius: 20px;
-        transition: all 0.3s ease;
-    }
-
-    /* Optimisation des cartes KPI */
-    .kpi-card {
-        background-color: #F9F7F2 !important; /* Dégradé très doux */
-        border: 1px solid #E9E4D9 !important;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .kpi-card:hover {
-        background-color: #F3EFE0 !important;
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05) !important;
-    }
-
-    /* Ajustement du texte pour la lisibilité */
-    .text-muted-soft {
-        color: #8B8579 !important;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-    }
-
-    .kpi-value {
-        color: #4A453C !important; /* Un noir terreux pour les chiffres */
-    }
-
-    /* Style des Tableaux */
-    .table-custom {
-        background-color: transparent !important;
-    }
-    .table-custom thead th {
-        background-color: #F1EDE3 !important; /* Entête légèrement plus sombre */
-        color: #8B8579 !important;
-        border-bottom: 2px solid #E9E4D9 !important;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-    }
-    .table-custom td {
-        border-bottom: 1px solid #E9E4D9 !important;
-        color: #4A453C;
-    }
-
-    /* Couleurs de texte */
-    .text-muted-soft { color: #8B8579 !important; font-weight: 600; }
-    .kpi-value { color: #4A453C !important; }
-    .card-title-custom { color: #4A453C !important; font-weight: 700; }
-</style>
-
-<script>
-    window.dashboardData = {
-        salesLabels: JSON.parse('{{ sales_labels_json|safe }}'),
-        salesData: JSON.parse('{{ sales_data_json|safe }}'),
-        ordersData: JSON.parse('{{ orders_data_json|safe }}'),
-        topLabels: JSON.parse('{{ top_products_labels_json|safe }}'),
-        topData: JSON.parse('{{ top_products_data_json|safe }}')
-    };
-</script>
 <script src="{% static 'dashboard/js/main_db.js' %}"></script>
 {% endblock %}

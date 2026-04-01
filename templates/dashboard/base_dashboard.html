@@ -9,48 +9,7 @@
 {% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
-    
-    <style>
-        /* --- STYLE DASHBOARD OPTIMISÉ --- */
-        :root { --ts-blue: #0d6efd; --ts-dark: #212529; --ts-light: #f8f9fa; }
-
-        .ts-db-nav-scroller {
-            display: flex !important;
-            overflow-x: auto !important;
-            padding: 15px 5px !important;
-            gap: 12px !important;
-            background-color: var(--ts-light) !important;
-            border-bottom: 2px solid #eee !important;
-            -webkit-overflow-scrolling: touch;
-        }
-        .ts-db-nav-scroller::-webkit-scrollbar { display: none; }
-
-        .ts-db-nav-card {
-            flex: 0 0 auto !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 85px !important;
-            height: 75px !important;
-            background: #fff !important;
-            border: 1px solid #e0e0e0 !important;
-            border-radius: 12px !important;
-            text-decoration: none !important;
-            transition: all 0.2s ease;
-        }
-
-        .ts-db-nav-card i { font-size: 1.3rem !important; color: var(--ts-blue) !important; margin-bottom: 4px; }
-        .ts-db-nav-card span { font-size: 0.7rem !important; font-weight: 600; color: #444; }
-
-        .ts-db-nav-card.ts-active { background-color: var(--ts-blue) !important; border-color: var(--ts-blue) !important; }
-        .ts-db-nav-card.ts-active i, .ts-db-nav-card.ts-active span { color: #fff !important; }
-
-        /* Sidebar Desktop */
-        #sidebarMenu .nav-link { color: #adb5bd; transition: 0.3s; margin-bottom: 5px; }
-        #sidebarMenu .nav-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
-        #sidebarMenu .nav-link.active { background-color: var(--ts-blue) !important; color: #fff !important; }
-    </style>
+    <link rel="stylesheet" href="{% static 'dashboard/css/base_dashboard.css' %}">
     {% block extra_css %}{% endblock %}
 {% endblock %}
 
