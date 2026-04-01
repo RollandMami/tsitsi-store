@@ -1,87 +1,133 @@
 /* ==========================================================================
-   1. PALETTE DE COULEURS GLOBALE (La source de vérité)
+   1. PALETTE DE COULEURS GLOBALE
    ========================================================================== */
 :root {
-  --rich-mahogany: #3c1518ff;
-  --dark-garnet: #69140eff;
-  --rust-brown: #a44200ff;
-  --bronze: #d58936ff;
-  --vanilla-custard: #f2f3aeff;
+  /* Ta palette chaude (Automne) */
+  --rich-mahogany: #3c1518;
+  --dark-garnet: #69140e;
+  --rust-brown: #a44200;
+  --bronze: #d58936;
+  --vanilla-custard: #f2f3ae;
 
-  /* Gradients basés sur ta palette */
-  --gradient-top: linear-gradient(0deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-right: linear-gradient(90deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-bottom: linear-gradient(180deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-left: linear-gradient(270deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-top-right: linear-gradient(45deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-bottom-right: linear-gradient(135deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-top-left: linear-gradient(225deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-bottom-left: linear-gradient(315deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
-  --gradient-radial: radial-gradient(var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  /* Palette froide (pour un thème sombre 'Aurora' comme ton image) */
+  --dark-void: #020211;        /* Fond très sombre (presque noir) */
+  --cosmic-blue: #180c4e;     /* Bleu profond */
+  --aurora-teal: #0de7ac;     /* Vert-eau vif (pour le 'Glow') */
+  --aurora-purple: #c433eb;   /* Violet vif (pour le 'Glow') */
+  --nebula-indigo: #4a00ff;   /* Bleu-violet profond */
 }
 
 /* ==========================================================================
-   2. THÈME CLAIR (Par défaut)
+   2. DÉFINITION DES THEMES
    ========================================================================== */
-:root {
-  /* Arrière-plans (Fonds clairs) */
-  --bg-primary: var(--vanilla-custard);
-  --bg-secondary: #ffffff;
-  --bg-accent: var(--bronze);
 
-  /* Textes (Textes sombres pour bien lire sur le fond clair) */
+/* --- THÈME CLAIR (Palette Chaude) --- */
+:root {
+  /* Textes sombres */
   --text-primary: var(--rich-mahogany);
   --text-secondary: var(--dark-garnet);
   --text-light: #ffffff;
 
-  /* Éléments interactifs (Boutons, liens) */
+  /* Éléments interactifs */
   --action-color: var(--rust-brown);
   --action-hover: var(--dark-garnet);
-  
-  /* Bordures */
   --border-color: var(--bronze);
+
+  /* --- LE GRAND CHANGEMENT : LE GRADIENT --- */
+  /* Un dégradé chaud et doux de haut en bas */
+  --bg-gradient: linear-gradient(180deg, var(--vanilla-custard) 0%, #ffffff 100%);
+  
+  /* Nous définissons une couleur de fond de secours solide pour les vieux navigateurs */
+  --bg-fallback: var(--vanilla-custard);
 }
 
-/* ==========================================================================
-   3. THÈME SOMBRE (Activé via l'attribut data-theme="dark")
-   ========================================================================== */
+/* --- THÈME SOMBRE (Aurora Gradient - comme ton image) --- */
 [data-theme="dark"] {
-  /* Arrière-plans (Fonds sombres) */
-  --bg-primary: var(--rich-mahogany);
-  --bg-secondary: var(--dark-garnet);
-  --bg-accent: var(--rust-brown);
-
-  /* Textes (Textes clairs pour ressortir du fond sombre) */
+  /* Textes clairs */
   --text-primary: var(--vanilla-custard);
   --text-secondary: var(--bronze);
   --text-light: #ffffff;
 
-  /* Éléments interactifs (Boutons, liens) */
+  /* Éléments interactifs */
   --action-color: var(--bronze);
   --action-hover: var(--vanilla-custard);
-  
-  /* Bordures */
   --border-color: var(--rust-brown);
+
+  /* --- LE GRAND CHANGEMENT : LE GRADIENT --- */
+  /* Reproduit l'effet 'Mesh Gradient' complexe de ton image en CSS */
+  --bg-gradient: 
+    radial-gradient(circle at 10% 20%, var(--aurora-purple) 0%, transparent 40%),
+    radial-gradient(circle at 40% 10%, var(--aurora-teal) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, var(--nebula-indigo) 0%, transparent 50%),
+    var(--dark-void); /* Couleur de fond de base */
+
+  --bg-fallback: var(--dark-void);
 }
 
 /* ==========================================================================
-   EXEMPLE D'UTILISATION DANS TON CSS
+   3. AFFECTATION GLOBALE
    ========================================================================== */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
-  background-color: var(--bg-primary);
+  /* On applique le gradient qui s'adapte au thème */
+  background-color: var(--bg-fallback); /* Secours */
+  background-image: var(--bg-gradient);
+  
+  /* Pour s'assurer que le gradient couvre tout sans se répéter */
+  background-attachment: fixed;
+  background-size: cover;
+  
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease; /* Transition douce lors du changement */
+  font-family: sans-serif; /* À remplacer plus tard par une belle police moderne ! */
+  transition: color 0.3s ease; /* Transition douce pour le texte */
 }
 
-a {
-  color: var(--action-color);
+a { color: var(--action-color); text-decoration: none; }
+a:hover { color: var(--action-hover); }
+/* ==========================================================================
+   PERSONNALISATION DE LA BANNIÈRE & DU BOUTON
+   ========================================================================== */
+
+/* 1. L'effet de fondu sur la limite basse de la bannière */
+.parallax-hero {
+  position: relative;
+  
+  /* L'astuce magique : On applique un masque de transparence sur les 10% du bas */
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  
+  /* Sécurité pour que le masque s'adapte bien à la taille */
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
-a:hover {
-  color: var(--action-hover);
+/* 2. Forcer tes couleurs sur le bouton Bootstrap */
+.parallax-hero .btn-primary {
+  /* On applique ta variable d'action (Rust brown ou Bronze selon le thème) */
+  background-color: var(--action-color) !important;
+  border-color: var(--action-color) !important;
+  color: #ffffff !important; /* Force le texte en blanc pour le contraste */
+  
+  /* Améliorations UI/UX pour un look premium */
+  border-radius: 50px !important; /* Bords très arrondis (style pillule), très moderne */
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-.card {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+/* Effet au survol du bouton */
+.parallax-hero .btn-primary:hover {
+  background-color: var(--action-hover) !important;
+  border-color: var(--action-hover) !important;
+  transform: translateY(-3px); /* Le bouton se soulève légèrement */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important; /* L'ombre s'accentue */
+}
+
+/* Effet quand on clique sur le bouton */
+.parallax-hero .btn-primary:active {
+  transform: translateY(-1px);
 }
