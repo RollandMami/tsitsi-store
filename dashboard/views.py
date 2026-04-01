@@ -82,7 +82,7 @@ def dashboard_products(request):
         products = products.filter(Q(product_name__icontains=query) | Q(category__name__icontains=query))
     context = {
         'products': products,
-        'categories': categories,  # <--- CETTE LIGNE EST CRUCIALE
+        'categories': categories,
         'title': 'Gestion Produits'
     }
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
