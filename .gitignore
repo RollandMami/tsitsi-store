@@ -19,8 +19,6 @@ dist/
 # Créez ce dossier MEDIA_ROOT si ce n'est pas déjà fait.
 /media/
 
-# Fichiers statiques collectés pour le déploiement (collectstatic)
-/static_files/
 
 #Environnement Virtuel
 venv/

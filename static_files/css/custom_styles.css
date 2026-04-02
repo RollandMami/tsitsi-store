@@ -1,0 +1,367 @@
+/* ============================================================
+   1. ANIMATIONS (Keyframes)
+   ============================================================ */
+
+@keyframes shimmer {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; }
+}
+
+@keyframes cart-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ============================================================
+   2. SKELETON LOADING (UX)
+   ============================================================ */
+
+.skeleton {
+    background: #f6f7f8;
+    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-repeat: no-repeat;
+    background-size: 800px 100%;
+    animation: shimmer 1.2s infinite linear;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+}
+
+.skeleton-img { width: 100%; height: 200px; margin-bottom: 10px; }
+.skeleton-title { width: 80%; height: 20px; margin-bottom: 10px; }
+.skeleton-text { width: 60%; height: 15px; margin-bottom: 8px; }
+
+/* ============================================================
+   3. INTERACTIONS & LIMITATION TEXTE (Cartes)
+   ============================================================ */
+
+.product-title-limit {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    height: 38px; 
+    position: relative; 
+    transition: all 0.3s ease;
+}
+
+.product-title-limit::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px; 
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 100%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .product-title-limit {
+    -webkit-line-clamp: unset; 
+    display: block;            
+    height: auto;              
+    overflow: visible;         
+}
+
+.card:hover .product-title-limit::after {
+    opacity: 0;
+}
+
+.btn-primary, 
+.btn-outline-success, 
+.btn-dark, 
+.btn-outline-primary,
+.product-card {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                box-shadow 0.3s ease;
+}
+
+.btn-primary:active, 
+.btn-outline-success:active, 
+.btn-outline-primary:active {
+    transform: scale(0.92);
+}
+
+.nav-link:hover .fa-cart-shopping {
+    animation: cart-bounce 0.5s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12) !important;
+}
+
+/* ============================================================
+   4. COMPOSANTS SPÉCIFIQUES (WhatsApp, etc.)
+   ============================================================ */
+
+.whatsapp-sticky {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #25d366;
+    color: white !important;
+    padding: 12px 20px;
+    border-radius: 50px;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 3000;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-sticky:hover {
+    transform: translateY(-5px);
+    background-color: #128c7e;
+}
+
+@media (max-width: 768px) {
+    .whatsapp-sticky span { display: none; }
+    .whatsapp-sticky { padding: 15px; border-radius: 50%; }
+}
+
+/* ============================================================
+   5. PAGE DÉTAIL PRODUIT
+   ============================================================ */
+
+.product-detail-img {
+    border-radius: 15px;
+    transition: transform 0.5s ease;
+    cursor: zoom-in;
+}
+
+.product-detail-img:hover {
+    transform: scale(1.02);
+}
+
+.badge-stock {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.product-price-large {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #dc3545;
+}
+
+.product-description {
+    line-height: 1.8;
+    color: #4b4b4b;
+    font-size: 1.05rem;
+}
+
+/* ============================================================
+   6. OPTIMISATION NAVIGATION & RECHERCHE MOBILE
+   ============================================================ */
+
+/* Ajustement de la barre de recherche mobile sous le logo */
+@media (max-width: 991.98px) {
+    .navbar {
+        padding-bottom: 10px !important;
+    }
+
+    /* Style pour l'input de recherche mobile pour qu'il soit plus moderne */
+    .navbar input[type="search"] {
+        border-radius: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding-left: 15px;
+    }
+
+    .navbar input[type="search"]::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Focus sur la recherche mobile */
+    .navbar input[type="search"]:focus {
+        background-color: white;
+        color: black;
+        box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Ajustement du logo pour laisser de la place au panier mobile */
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+}
+
+/* Correction de l'alignement du panier mobile en haut à droite */
+.d-lg-none .fa-cart-shopping {
+    color: #fff;
+    font-size: 1.3rem;
+}
+
+/* Évite que la barre de navigation ne soit trop haute sur les très petits écrans */
+.container-fluid.flex-wrap {
+    gap: 5px;
+}
+
+/* ============================================================
+   7. OPTIMISATION UI/UX BARRE DE NAVIGATION MOBILE
+   ============================================================ */
+
+.mobile-nav-bar {
+    display: none; /* Caché par défaut sur Desktop */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 65px; /* Hauteur fixe pour un alignement stable */
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+    padding: 0 !important; /* Important pour que les zones de clic soient maximales */
+}
+
+/* Style de chaque bouton du menu */
+.mobile-nav-item {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #5f6368; /* Couleur grise standard UI */
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+/* État actif ou au toucher */
+.mobile-nav-item:active {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.mobile-nav-item.active {
+    color: #212529; /* Plus sombre quand actif */
+}
+
+/* Harmonisation des Icônes (Correction du bug de décalage) */
+.mobile-nav-item i {
+    font-size: 1.3rem;
+    height: 24px; /* Hauteur fixe pour l'icône */
+    width: 24px;  /* Largeur fixe pour l'icône */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+}
+
+/* Style du Texte sous les icônes */
+.mobile-nav-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* ============================================================
+   8. GESTION DU BADGE PANIER (Style Pro)
+   ============================================================ */
+
+/* Conteneur spécifique pour l'icône avec badge */
+.nav-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Le badge rouge */
+.mobile-nav-bar .badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #dc3545 !important;
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 50%;
+    border: 2px solid #5a51e0; /* Le contour blanc qui "nettoie" l'UI */
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Affichage uniquement sur Mobile */
+@media (max-width: 991.98px) {
+    .mobile-nav-bar {
+        display: flex;
+    }
+    /* On ajoute un padding au body pour que le contenu ne soit pas caché par la barre */
+    body {
+        padding-bottom: 65px !important;
+    }
+}
+
+/* ============================================================
+   9. GESTION DU message TOAST (Notifications)
+   ============================================================ */
+/* Animation de la barre de progression du message */
+/* Animation de la barre de progression du message */
+.toast {
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    animation: toast-timer 5s linear forwards;
+}
+
+@keyframes toast-timer {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* Couleurs personnalisées pour Django tags */
+.bg-error { background-color: #e74c3c !important; }
+.bg-success { background-color: #2ecc71 !important; }
+.bg-warning { background-color: #f1c40f !important; }
+.bg-info { background-color: #3498db !important; }
+
+/* ============================================================
+   10. PARALAXE (Effet de profondeur sur les sections héroïques)
+   ============================================================ */
+/* Style pour l'effet parallaxe */
+.parallax-hero {
+    /* On récupère le chemin de l'image via Django ou un chemin relatif */
+    background-image: url('../img/hero_background.jpg'); 
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    
+    /* L'élément clé pour l'effet fixe */
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    
+    /* Optionnel : assure une transition fluide si l'image charge lentement */
+    background-color: #333; 
+}
+
+/* IMPORTANT : Désactiver sur mobile car 'background-attachment: fixed' 
+   provoque souvent des bugs d'affichage ou de zoom sur iOS/Android */
+@media (max-width: 768px) {
+    .parallax-hero {
+        background-attachment: scroll;
+        height: 400px; /* On réduit un peu la hauteur sur mobile */
+    }
+}

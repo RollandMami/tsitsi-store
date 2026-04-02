@@ -1,0 +1,87 @@
+/* ==========================================================================
+   1. PALETTE DE COULEURS GLOBALE (La source de vérité)
+   ========================================================================== */
+:root {
+  --rich-mahogany: #3c1518ff;
+  --dark-garnet: #69140eff;
+  --rust-brown: #a44200ff;
+  --bronze: #d58936ff;
+  --vanilla-custard: #f2f3aeff;
+
+  /* Gradients basés sur ta palette */
+  --gradient-top: linear-gradient(0deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-right: linear-gradient(90deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-bottom: linear-gradient(180deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-left: linear-gradient(270deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-top-right: linear-gradient(45deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-bottom-right: linear-gradient(135deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-top-left: linear-gradient(225deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-bottom-left: linear-gradient(315deg, var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+  --gradient-radial: radial-gradient(var(--rich-mahogany), var(--dark-garnet), var(--rust-brown), var(--bronze), var(--vanilla-custard));
+}
+
+/* ==========================================================================
+   2. THÈME CLAIR (Par défaut)
+   ========================================================================== */
+:root {
+  /* Arrière-plans (Fonds clairs) */
+  --bg-primary: var(--vanilla-custard);
+  --bg-secondary: #ffffff;
+  --bg-accent: var(--bronze);
+
+  /* Textes (Textes sombres pour bien lire sur le fond clair) */
+  --text-primary: var(--rich-mahogany);
+  --text-secondary: var(--dark-garnet);
+  --text-light: #ffffff;
+
+  /* Éléments interactifs (Boutons, liens) */
+  --action-color: var(--rust-brown);
+  --action-hover: var(--dark-garnet);
+  
+  /* Bordures */
+  --border-color: var(--bronze);
+}
+
+/* ==========================================================================
+   3. THÈME SOMBRE (Activé via l'attribut data-theme="dark")
+   ========================================================================== */
+[data-theme="dark"] {
+  /* Arrière-plans (Fonds sombres) */
+  --bg-primary: var(--rich-mahogany);
+  --bg-secondary: var(--dark-garnet);
+  --bg-accent: var(--rust-brown);
+
+  /* Textes (Textes clairs pour ressortir du fond sombre) */
+  --text-primary: var(--vanilla-custard);
+  --text-secondary: var(--bronze);
+  --text-light: #ffffff;
+
+  /* Éléments interactifs (Boutons, liens) */
+  --action-color: var(--bronze);
+  --action-hover: var(--vanilla-custard);
+  
+  /* Bordures */
+  --border-color: var(--rust-brown);
+}
+
+/* ==========================================================================
+   EXEMPLE D'UTILISATION DANS TON CSS
+   ========================================================================== */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition douce lors du changement */
+}
+
+a {
+  color: var(--action-color);
+}
+
+a:hover {
+  color: var(--action-hover);
+}
+
+.card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
