@@ -1,0 +1,36 @@
+/* Styles personnalisés pour cette page */
+.hero-section {
+    padding: 100px 0;
+    background-color: #f8f9fa; /* bg-light */
+}
+.mission-vision-card {
+    min-height: 200px;
+}
+.team-member {
+    transition: transform 0.3s ease;
+}
+.team-member:hover {
+    transform: translateY(-5px);
+}
+/* Unifie la taille des cartes dans les carrousels mobiles */
+.carousel-item .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-width: 2px; /* Accentue légèrement les bordures de couleurs */
+}
+
+/* Style des points (indicateurs) pour les deux carrousels */
+#missionCarousel .carousel-indicators [data-bs-target],
+#reasonsCarousel .carousel-indicators [data-bs-target] {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 6px;
+    opacity: 0.5;
+}
+
+#missionCarousel .carousel-indicators .active,
+#reasonsCarousel .carousel-indicators .active {
+    opacity: 1;
+}

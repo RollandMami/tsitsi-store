@@ -1,0 +1,66 @@
+.product-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+        .img-container { position: relative; overflow: hidden; height: 200px; background-color: #f8f9fa; }
+        .img-container img { object-fit: contain; height: 100%; width: 100%; padding: 10px; }
+        .btn-overlay { 
+            position: absolute; bottom: -50px; left: 0; right: 0; 
+            transition: all 0.3s ease; background: rgba(13, 110, 253, 0.9); 
+            color: white; text-align: center; padding: 8px; text-decoration: none;
+        }
+        .product-card:hover .btn-overlay { bottom: 0; }
+        .product-title-limit { 
+            display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; 
+            overflow: hidden; height: 2.4em; line-height: 1.2em;
+        }
+/* Gestion du conteneur d'image */
+.product-card .img-container {
+    position: relative;
+    height: 200px; /* Hauteur fixe pour toutes les images */
+    overflow: hidden;
+    background-color: #f8f9fa;
+    border-radius: 15px 15px 0 0;
+}
+
+.product-card .img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Remplit le cadre sans déformer l'image */
+    transition: transform 0.4s ease;
+}
+
+/* Effet au survol */
+.product-card:hover img {
+    transform: scale(1.1);
+}
+
+/* Bouton Aperçu (Overlay) */
+.btn-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white !important;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+    z-index: 2;
+}
+
+.product-card:hover .btn-overlay {
+    opacity: 1;
+}
+
+/* Limitation du titre à 2 lignes pour garder les cartes alignées */
+.product-title-limit {
+    font-size: 0.95rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 2.8rem;
+}

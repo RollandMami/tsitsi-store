@@ -1,0 +1,135 @@
+/* --- THEME BEIGE SABLE PROFESSIONNEL --- */
+    :root {
+        --beige-main: #F9F7F2;
+        --beige-darker: #F1EDE3;
+        --beige-border: #E9E4D9;
+        --text-earth: #4A453C;
+        --text-muted-soft: #8B8579;
+    }
+
+    body { background-color: #fcfbf9; }
+
+    /* CAROUSEL MOBILE POUR KPIS */
+    @media (max-width: 768px) {
+        .ts-kpi-carousel {
+            display: flex !important;
+            flex-wrap: nowrap !important; /* Empêche le retour à la ligne */
+            overflow-x: auto !important; /* Active le défilement horizontal */
+            padding: 10px !important;
+            gap: 15px !important;
+            -webkit-overflow-scrolling: touch;
+        }
+        .kpi-item {
+            flex: 0 0 75% !important; /* Chaque carte prend 75% de la largeur */
+            max-width: 75% !important;
+        }
+    }
+
+    /* --- Style amélioré de la barre de recherche --- */
+    #orderSearchInput {
+        border-radius: 20px !important;
+        padding-left: 15px;
+        background-color: #fcfbf9;
+        transition: all 0.3s ease;
+    }
+
+    #orderSearchInput:focus {
+        background-color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
+        border-color: #0d6efd !important;
+    }
+
+    .input-group-text {
+        border-radius: 20px 0 0 20px !important;
+        background-color: #fcfbf9 !important;
+    }
+    /* Cartes personnalisées */
+    .custom-card {
+        background-color: var(--beige-main) !important;
+        border: 1px solid var(--beige-border) !important;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+        transition: transform 0.2s ease;
+    }
+
+    .card-title-custom {
+        color: var(--text-earth) !important;
+        font-weight: 700;
+    }
+    /* Style du Tableau de Commandes */
+    .table-custom { background-color: transparent !important; }
+    
+    .table-custom thead th {
+        background-color: var(--beige-darker) !important;
+        color: var(--text-muted-soft) !important;
+        border-bottom: 2px solid var(--beige-border) !important;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 15px;
+    }
+
+    .table-custom td {
+        border-bottom: 1px solid var(--beige-border) !important;
+        color: var(--text-earth);
+        padding: 15px;
+    }
+
+    /* Status Badges */
+    .badge-status {
+        padding: 0.5em 0.8em;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    /* Actions */
+    .btn-action {
+        background: var(--beige-darker);
+        border: none;
+        color: var(--text-earth);
+        transition: 0.2s;
+    }
+    .btn-action:hover { background: var(--beige-border); }
+
+    /* Ajustement Graphique */
+    #topProductsChartContainer {
+        min-height: 350px;
+    }
+
+    /* Animation de chargement pour AJAX */
+    .loading-fade { opacity: 0.5; pointer-events: none; }
+
+    /* Réapprovisionnement - Liste scrollable */
+    .replenishment-list {
+        overflow-y: auto;
+        max-height: 450px;
+    }
+
+    .replenishment-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .replenishment-list::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+    }
+
+    .replenishment-list::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .replenishment-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    /* État des alertes de stock */
+    .stock-alert {
+        transition: all 0.2s ease;
+    }
+
+    .stock-alert:hover {
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }

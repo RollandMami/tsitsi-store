@@ -1,0 +1,198 @@
+/* Conteneur de scroll */
+    .variant-scroll-container {
+        max-height: 280px; /* Ajuste cette valeur selon la hauteur souhaitée */
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 5px; /* Espace pour ne pas coller à la barre */
+    }
+
+    /* Style de la scrollbar (Chrome, Safari, Edge) */
+    .variant-scroll-container::-webkit-scrollbar {
+        width: 6px; /* Très fine */
+    }
+
+    .variant-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .variant-scroll-container::-webkit-scrollbar-thumb {
+        background: #ccc; /* Couleur de la barre */
+        border-radius: 10px;
+    }
+
+    .variant-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #0d6efd; /* Devient bleue au survol */
+    }
+
+    /* Pour Firefox */
+    .variant-scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: #ccc #f1f1f1;
+    }
+
+    /* --- Rappel du style des cartes (pour cohérence) --- */
+    .variant-horizontal {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        margin-bottom: 4px; /* Petit espace entre les cartes */
+    }
+
+    .variant-horizontal.active {
+        border: 2px solid #198754;
+        background-color: #f8f9fa;
+        transform: none !important;
+        cursor: default;
+    }
+
+    a.variant-horizontal:hover {
+        border-color: #0d6efd;
+        background-color: #f0f7ff;
+        transform: translateX(5px);
+    }
+    
+    .variant-horizontal {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        cursor: pointer;
+    }
+
+    /* Effet au survol */
+    a.variant-horizontal:hover {
+        border-color: #0d6efd;
+        background-color: #f8fbff;
+        transform: translateX(5px);
+    }
+
+    /* Style si c'est l'option active */
+    .variant-horizontal.active {
+        border: 2px solid #198754; /* Bordure verte épaisse */
+        background-color: #f8f9fa; /* Fond neutre pour faire ressortir le contenu */
+        transform: none !important; /* Désactive tout mouvement */
+        box-shadow: none !important;
+        cursor: default;
+    }
+
+    /* Miniature Image */
+    .variant-img {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #f8f8f8;
+    }
+
+    .variant-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Détails (Centre) */
+    .variant-details {
+        flex-grow: 1;
+        padding-left: 15px;
+    }
+
+    /* Prix (Droite) */
+    .variant-price-tag {
+        font-weight: 800;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    .variant-horizontal.active .variant-price-tag {
+        color: #198754;
+    }
+    
+    /* Galerie */
+    .miniature-img { transition: all 0.2s ease; border: 2px solid transparent !important; cursor: pointer; }
+    .miniature-img:hover, .active-mini { border-color: #0d6efd !important; transform: translateY(-2px); }
+    
+    /* Cartes des variantes */
+    .variant-card {
+        background-color: #fff;
+        border: 1px solid #dee2e6 !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none !important;
+    }
+
+    /* Cercle radio personnalisé */
+    .custom-radio-circle {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 50%;
+        display: inline-block;
+        transition: all 0.2s ease;
+    }
+
+    /* État actif (Produit actuel) */
+    .active-card {
+        border-color: #0d6efd !important;
+        background-color: #f8faff;
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.1) !important;
+        cursor: default;
+    }
+
+    .active-card .custom-radio-circle {
+        border-color: #0d6efd;
+        border-width: 6px;
+    }
+
+    .active-card h6 { color: #0d6efd !important; }
+
+    .nav-tabs .nav-link.active { color: #0d6efd; border-bottom: 3px solid #0d6efd; background: none; }
+
+    /* Couleur Dorée pour l'icône panier */
+    .cart-icon-gold {
+        color: #FFD700; /* Doré */
+    }
+
+    /* Badge Stock style Photo 1 */
+    .badge-stock-custom {
+        background-color: #2ecc71; /* Vert vif */
+        color: white;
+        padding: 6px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Typographie du prix */
+    #price-display, h2 {
+        font-family: 'Arial Black', sans-serif; /* Pour un aspect plus massif */
+    }
+
+    /* Style des séparateurs (pipes) */
+    .border-start {
+        border-color: #dee2e6 !important;
+    }
+
+    /* Supprime le cadre gris autour des icônes d'étoiles */
+    .text-warning i, .rating-stars i, .star-item {
+        border: none !important;
+        text-decoration: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Si ce sont des étoiles vides (FontAwesome) */
+    .far.fa-star {
+        color: #e4e4e4; /* Un gris clair pour l'étoile elle-même, pas le cadre */
+    }

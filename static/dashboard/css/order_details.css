@@ -1,0 +1,15 @@
+  .card {
+    border: none;
+    border-radius: 1rem;
+  }
+  
+  .table-sm {
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 768px) {
+    .sticky-top {
+      position: static !important;
+      margin-top: 2rem;
+    }
+  }

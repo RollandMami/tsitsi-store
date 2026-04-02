@@ -1,0 +1,157 @@
+/* --- Mise en page globale & Espacement --- */
+.table tbody td {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    vertical-align: middle;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+}
+
+/* --- Barre de recherche & Conteneur --- */
+.search-container {
+    position: relative;
+    flex: 1; /* Permet à la barre de prendre l'espace disponible */
+    max-width: 450px;
+    width: 100%;
+}
+
+.search-container .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* --- Styles du Texte & Troncature --- */
+.text-truncate { 
+    display: block; 
+    max-width: 180px; 
+    cursor: help;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.text-truncate:hover { color: #0d6efd !important; }
+
+/* --- Badges de Statut (Look Moderne) --- */
+.bg-success-soft { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.bg-secondary-soft { background-color: #f5f5f5; color: #616161; border: 1px solid #e0e0e0; }
+
+.btn-white { 
+    background: #fff; 
+    border: 1px solid #dee2e6; 
+    color: #444;
+}
+.btn-white:hover { 
+    background: #f8f9fa; 
+    color: #222;
+}
+
+/* --- Animations & Spinners --- */
+.spinner-border-sm { 
+    width: 1rem; 
+    height: 1rem; 
+    border-width: 0.15em; 
+}
+
+@keyframes spin { 
+    from { transform: rotate(0deg); } 
+    to { transform: rotate(360deg); } 
+}
+
+.fa-spinner { 
+    animation: spin 1s linear infinite; 
+}
+
+/* --- Notifications (Toasts Bootstrap) --- */
+.toast { 
+    font-size: 0.9rem; 
+    border-radius: 12px; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+}
+.bg-success { background-color: #2ecc71 !important; }
+.bg-danger { background-color: #e74c3c !important; }
+
+/* --- Édition Inline (Inputs) --- */
+.edit-input { 
+    transition: all 0.2s ease-in-out; 
+    border-radius: 6px; 
+    border: 1px solid transparent;
+}
+
+.edit-input:hover {
+    background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+.edit-input:focus { 
+    background-color: #fff !important; 
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15) !important; 
+    border: 1px solid #0d6efd !important; 
+    outline: none;
+}
+
+.border-warning { 
+    border: 1px solid #ffc107 !important; 
+    background-color: #fff3cd !important; 
+}
+
+/* --- Responsivité (Mobile & Tablette) --- */
+@media (max-width: 768px) { 
+    .card-header { 
+        flex-direction: column; 
+        align-items: stretch; /* Prend toute la largeur */
+        padding: 1rem;
+        gap: 0.75rem;
+    } 
+
+    .search-container { 
+        max-width: 100%; 
+        order: 2; /* La barre passe sous le titre */
+    } 
+    
+    .card-header h5 {
+        order: 1;
+        text-align: center;
+    }
+    
+    .card-header a.btn {
+        order: 3; /* Le bouton "Nouveau" passe en bas */
+        width: 100%;
+    }
+}
+
+/* Design Tsitsi Store */
+    .custom-card {
+        background-color: #F9F7F2 !important; 
+        border: 1px solid #E9E4D9 !important;
+        border-radius: 20px;
+    }
+    
+    .search-container .input-group {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #E9E4D9;
+        transition: all 0.3s ease;
+    }
+
+    .search-container .input-group:focus-within {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
+    }
+
+    .table-light {
+        background-color: #F1EDE3 !important;
+        color: #8B8579 !important;
+    }
+
+    #product-count {
+        background-color: #0d6efd;
+        color: white !important;
+        font-size: 0.8rem;
+    }
+
+    .loading-fade { opacity: 0.5; transition: opacity 0.2s; }
