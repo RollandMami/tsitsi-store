@@ -92,22 +92,6 @@
         <section class="mb-5 py-4">
             <h2 class="fw-bold mb-4 text-center display-6">Nos Dernières Nouveautés</h2>
 
-            {# SKELETON LOADER #}
-            <div id="skeleton-grid" class="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-4">
-                {% for i in "1234"|make_list %}
-                <div class="col">
-                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
-                        <div class="skeleton" style="height: 250px; width: 100%;"></div>
-                        <div class="card-body">
-                            <div class="skeleton mb-2" style="height: 1.5rem; width: 90%;"></div>
-                            <div class="skeleton mb-4" style="height: 1rem; width: 50%;"></div>
-                            <div class="skeleton mt-auto" style="height: 45px; width: 100%; border-radius: 8px;"></div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
             {# CONTENU RÉEL #}
             <div id="product-grid" class="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-4" style="display: none !important;">
                 {% for product in products %}
@@ -186,18 +170,16 @@
 
 {% block extra_js %}
     <script>
-        // Basculement Skeleton -> Contenu
+        // On n'attend pas le 'load' (trop tard), on utilise DOMContentLoaded
         document.addEventListener('DOMContentLoaded', function() {
-            window.addEventListener('load', function() {
-                const skeletonGrid = document.getElementById('skeleton-grid');
-                const productGrid = document.getElementById('product-grid');
-                
-                if (skeletonGrid && productGrid) {
-                    skeletonGrid.classList.add('d-none'); // Cache le skeleton
-                    productGrid.style.setProperty('display', 'flex', 'important'); // Affiche les produits
-                }
-            });
+            const skeletonGrid = document.getElementById('skeleton-grid');
+            const productGrid = document.getElementById('product-grid');
+            if (skeletonGrid && productGrid) {
+                skeletonGrid.remove(); // Supprime carrément du DOM pour libérer de la mémoire
+                productGrid.style.display = 'flex';
+            }
         });
     </script>
-    <script src="{% static 'store/js/search.js' %} " defer></script>
+    {# Correction de la syntaxe : defer en dehors du guillemet #}
+    <script src="{% static 'store/js/search.js' %}" defer></script>
 {% endblock %}
