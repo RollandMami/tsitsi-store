@@ -183,4 +183,3 @@ LOGIN_URL = 'users:login'
 SITE_ID = 1
 
 WHITENOISE_MAX_AGE = 31536000
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

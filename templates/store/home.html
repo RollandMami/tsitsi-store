@@ -170,16 +170,19 @@
 
 {% block extra_js %}
     <script>
-        // On n'attend pas le 'load' (trop tard), on utilise DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', function() {
-            const skeletonGrid = document.getElementById('skeleton-grid');
-            const productGrid = document.getElementById('product-grid');
-            if (skeletonGrid && productGrid) {
-                skeletonGrid.remove(); // Supprime carrément du DOM pour libérer de la mémoire
-                productGrid.style.display = 'flex';
-            }
-        });
-    </script>
+    // On force l'affichage dès que le HTML est lu
+    document.addEventListener('DOMContentLoaded', function() {
+        var skeleton = document.getElementById('skeleton-grid');
+        var products = document.getElementById('product-grid');
+        
+        if (products) {
+            products.setAttribute('style', 'display: flex !important'); // On force l'affichage
+        }
+        if (skeleton) {
+            skeleton.style.display = 'none'; // On cache le chargement
+        }
+    });
+</script>
     {# Correction de la syntaxe : defer en dehors du guillemet #}
     <script src="{% static 'store/js/search.js' %}" defer></script>
 {% endblock %}
