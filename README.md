@@ -116,3 +116,13 @@ print("représentatifs:", Product.objects.filter(is_available=True, is_main_repr
 - Traitement des commandes : logique transactionnelle via l'ORM (transactions DB) pour garantir la cohérence des stocks et des commandes.
 
 Si vous souhaitez que j'ajoute des sections supplémentaires (ex. architecture, tests, CI/CD, ou exemples d'API), dites-le et je l'ajouterai.
+
+# Mis à jour du redimentionnement des images
+
+```bash
+python ./manage.py shell
+from store.models import Product
+for p in Product.objects.all():
+    p.save() # Le redimensionnement se déclenche ici
+
+```

@@ -39,8 +39,8 @@ class Product(models.Model):
         size=[800, 800], 
         quality=75, 
         crop=['middle', 'center'],
-        upload_to='photos/products', 
-        force_format='JPEG',
+        upload_to='photos/products',
+        force_format='WEBP',
         verbose_name="Image Principale"
     )
     
@@ -129,7 +129,7 @@ class ProductImage(models.Model):
         size=[800, 800], 
         quality=75, 
         upload_to='photos/product_gallery',
-        force_format='JPEG',
+        force_format='WEBP',
         verbose_name="Image Additionnelle"
     )
     created_at = models.DateTimeField(auto_now_add=True)

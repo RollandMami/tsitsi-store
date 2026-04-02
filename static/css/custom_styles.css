@@ -95,37 +95,6 @@
 }
 
 /* ============================================================
-   4. COMPOSANTS SPÉCIFIQUES (WhatsApp, etc.)
-   ============================================================ */
-
-.whatsapp-sticky {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    background-color: #25d366;
-    color: white !important;
-    padding: 12px 20px;
-    border-radius: 50px;
-    text-decoration: none !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    z-index: 3000;
-    font-weight: bold;
-    transition: all 0.3s ease;
-}
-
-.whatsapp-sticky:hover {
-    transform: translateY(-5px);
-    background-color: #128c7e;
-}
-
-@media (max-width: 768px) {
-    .whatsapp-sticky span { display: none; }
-    .whatsapp-sticky { padding: 15px; border-radius: 50%; }
-}
-
-/* ============================================================
    5. PAGE DÉTAIL PRODUIT
    ============================================================ */
 
@@ -431,7 +400,7 @@ footer hr {
 /* Style pour l'effet parallaxe */
 .parallax-hero {
     /* On récupère le chemin de l'image via Django ou un chemin relatif */
-    background-image: url('../img/hero_background.jpg'); 
+    background-image: url('../img/hero_background.webp'); 
     height: 500px;
     background-size: cover;
     background-position: center;

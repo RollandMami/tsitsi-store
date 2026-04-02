@@ -116,7 +116,7 @@
                         
                         <div class="img-container" style="height: 220px; overflow: hidden; position: relative;">
                             <a href="{{ product.get_url }}">
-                                <img src="{{ product.images.url }}" class="w-100 h-100" alt="{{ product.product_name }}" style="object-fit: contain; padding: 15px;">
+                                <img src="{{ product.images.url }}" class="w-100 h-100" alt="{{ product.product_name }}" style="object-fit: contain; padding: 15px;" width="300" height="300" loading="lazy">
                             </a>
                             
                             {# Nouveau Badge Rupture intelligent #}
@@ -199,5 +199,5 @@
             });
         });
     </script>
-    <script src="{% static 'store/js/search.js' %}"></script>
+    <script src="{% static 'store/js/search.js' %} " defer></script>
 {% endblock %}

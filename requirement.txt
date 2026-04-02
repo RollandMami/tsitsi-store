@@ -75,3 +75,5 @@ typing_extensions==4.15.0 ; python_version >= "3.9"
 typing_extensions ; python_version < "3.9"
 
 djangorestframework
+
+whitenoise

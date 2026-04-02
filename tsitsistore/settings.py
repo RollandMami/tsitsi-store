@@ -67,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'tsitsistore.urls'
@@ -180,3 +181,5 @@ LOGIN_REDIRECT_URL = 'users:my_account'
 LOGIN_URL = 'users:login'
 
 SITE_ID = 1
+
+WHITENOISE_MAX_AGE = 31536000
