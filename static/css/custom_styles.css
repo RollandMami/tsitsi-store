@@ -556,6 +556,35 @@ footer hr {
    11. STYLE DU DRAWER (MENU LATÉRAL MOBILE)
    ============================================================ */
 
+/* --- Header du Drawer --- */
+.drawer-header {
+    /* On remplace le bg-dark de Bootstrap par ton identité visuelle si besoin */
+    background-color: var(--rich-mahogany) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Style de l'avatar ou de l'icône utilisateur par défaut */
+.drawer-header img.rounded-circle {
+    border: 2px solid var(--aurora-teal) !important; /* Bordure assortie au thème */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.drawer-header .fa-circle-user {
+    /* Utilise tes variables de couleur pour l'icône de profil non connecté */
+    color: var(--vanilla-custard) !important;
+}
+
+/* Texte dans le header */
+.user-info h6 {
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.user-info small {
+    color: var(--text-light) !important;
+    letter-spacing: 0.5px;
+}
+
 /* Conteneur principal du Drawer */
 .drawer-body {
     background-color: var(--bg-fallback) !important;
@@ -638,16 +667,10 @@ footer hr {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Section Réseaux Sociaux en bas */
-.drawer-body .fa-facebook {
-    color: var(--rich-mahogany) !important;
-    transition: transform 0.3s ease;
-}
-
-[data-theme="dark"] .drawer-body .fa-facebook {
-    color: var(--aurora-purple) !important;
-}
-
-.drawer-body .fa-facebook:hover {
-    transform: scale(1.2);
+/* --- Footer du Drawer (Réseaux Sociaux) --- */
+.drawer-body .mt-auto {
+    border-top: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.03); /* Un léger fond pour distinguer la zone */
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
 }
