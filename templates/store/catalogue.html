@@ -126,7 +126,7 @@
                             {% if product.group_id %}
                                 {# S'il y a un group_id, on considère qu'il y a des variantes : on renvoie vers le détail #}
                                 <a href="{{ product.get_url }}" class="btn btn-sm btn-outline-primary w-100 py-2">
-                                    <i class="fas fa-eye me-1"></i> Voir options
+                                    <i class="fa-solid fa-layer-group me-2"></i> Voir options
                                 </a>
                             {% elif product.stock > 0 %}
                                 <a href="{% url 'cart:add_cart' product.id %}" class="btn btn-sm btn-primary w-100 py-2">

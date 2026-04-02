@@ -1,11 +1,3 @@
-/* --- CONFIGURATION COMMUNE CUPERTINO --- */
-:root {
-    --ios-blue: #007AFF;
-    --ios-red: #FF3B30;
-    --ios-border: rgba(60, 60, 67, 0.2);
-    --ios-blur: blur(20px) saturate(180%);
-    --ios-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
 
 /* --- TOASTS (NOTIFICATIONS) --- */
 .toast-container-cupertino {

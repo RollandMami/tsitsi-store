@@ -38,7 +38,8 @@
 .product-title-limit {
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2; 
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     height: 38px; 
     position: relative; 
@@ -59,6 +60,7 @@
 
 .card:hover .product-title-limit {
     -webkit-line-clamp: unset; 
+    line-clamp: unset;
     display: block;            
     height: auto;              
     overflow: visible;         
@@ -157,6 +159,121 @@
 }
 
 /* ============================================================
+   9. NAVBAR (DESKTOP)
+   ============================================================ */
+
+@media (min-width: 992px) {
+    .navbar {
+        background-color: var(--rich-mahogany) !important; /* Couleur solide par défaut */
+        transition: all 0.3s ease;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .navbar .navbar-collapse {
+        background-color: var(--rich-mahogany) !important; /* Couleur solide par défaut */
+        transition: all 0.3s ease;
+        padding: 15px 0;
+    }
+
+    /* Effet Glassmorphism si tu es en thème sombre */
+    [data-theme="dark"] .navbar {
+        background-color: rgba(2, 2, 17, 0.8) !important; /* var(--dark-void) avec opacité */
+        backdrop-filter: var(--ios-blur);
+        -webkit-backdrop-filter: var(--ios-blur);
+    }
+
+    .navbar-brand {
+        color: var(--text-light) !important;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        color: var(--text-light) !important;
+        font-weight: 500;
+        margin: 0 10px;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--bronze) !important; /* Pointe de couleur au survol */
+    }
+
+    /* Style de la barre de recherche Desktop */
+    .navbar .form-control {
+        background-color: rgba(255, 255, 255, 0.795);
+        border: 1px solid var(--border-color);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .navbar .form-control:focus {
+        background-color: white;
+        color: var(--dark-void);
+        box-shadow: 0 0 15px var(--aurora-teal);
+    }
+}
+
+/* ============================================================
+   10. FOOTER PERSONNALISÉ (Tsitsi Store)
+   ============================================================ */
+
+/* Ciblage du footer pour outrepasser Bootstrap */
+footer.bg-dark {
+    background-color: var(--rich-mahogany) !important; /* Couleur Automne par défaut */
+    border-top: 1px solid var(--border-color);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Adaptation au thème Sombre (Aurora) */
+[data-theme="dark"] footer.bg-dark {
+    background-color: var(--dark-void) !important;
+    background-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--cosmic-blue) 100%) !important;
+}
+
+/* Titres (Tsitsi Store, Liens utiles, etc.) */
+footer h5.text-warning, 
+footer h6.text-info {
+    color: var(--bronze) !important; /* On utilise le bronze pour les titres */
+    font-weight: 700 !important;
+}
+
+/* Liens et textes */
+footer p, footer a {
+    color: var(--text-light) !important;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--aurora-teal) !important; /* Lueur verte au survol */
+    text-decoration: underline !important;
+}
+
+/* Icônes réseaux sociaux */
+footer .fab, footer .fas {
+    color: var(--bronze) !important;
+}
+
+[data-theme="dark"] footer .fab:hover {
+    color: var(--aurora-purple) !important;
+}
+
+/* Ligne de séparation (hr) */
+footer hr {
+    border-top: 1px solid var(--border-color) !important;
+    opacity: 0.3;
+}
+
+/* Ajustement spécifique pour la barre mobile */
+@media (max-width: 991.98px) {
+    footer {
+        padding-bottom: 85px !important; /* Laisse de la place pour la mobile-nav-bar */
+    }
+}
+
+/* ============================================================
    6. OPTIMISATION NAVIGATION & RECHERCHE MOBILE
    ============================================================ */
 
@@ -164,14 +281,14 @@
 @media (max-width: 991.98px) {
     .navbar {
         padding-bottom: 10px !important;
+        background-color: var(--rich-mahogany) !important;
     }
-
     /* Style pour l'input de recherche mobile pour qu'il soit plus moderne */
     .navbar input[type="search"] {
         border-radius: 20px;
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+        color: var(--text-light);
         padding-left: 15px;
     }
 
@@ -181,20 +298,21 @@
 
     /* Focus sur la recherche mobile */
     .navbar input[type="search"]:focus {
-        background-color: white;
-        color: black;
-        box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        background-color: var(--text-light);
+        color: var(--dark-void);
+        box-shadow: 0 0 10px var(--aurora-teal);
     }
 
     /* Ajustement du logo pour laisser de la place au panier mobile */
     .navbar-brand {
         font-size: 1.1rem;
+        color: var(--text-light) !important;
     }
 }
 
 /* Correction de l'alignement du panier mobile en haut à droite */
 .d-lg-none .fa-cart-shopping {
-    color: #fff;
+    color: var(--text-light);
     font-size: 1.3rem;
 }
 
@@ -214,13 +332,15 @@
     left: 0;
     width: 100%;
     height: 65px; /* Hauteur fixe pour un alignement stable */
-    background: #ffffff;
+    background: var(--bg-fallback);
+    background-image: var(--bg-gradient);
     display: flex;
     justify-content: space-around;
     align-items: center;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 2000;
     padding: 0 !important; /* Important pour que les zones de clic soient maximales */
+    border-top: 1px solid var(--border-color);
 }
 
 /* Style de chaque bouton du menu */
@@ -231,7 +351,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #5f6368; /* Couleur grise standard UI */
+    color: var(--text-secondary); /* Couleur grise standard UI */
     text-decoration: none !important;
     transition: all 0.2s ease;
 }
@@ -242,7 +362,7 @@
 }
 
 .mobile-nav-item.active {
-    color: #212529; /* Plus sombre quand actif */
+    color: var(--action-color); /* Plus sombre quand actif */
 }
 
 /* Harmonisation des Icônes (Correction du bug de décalage) */
@@ -279,12 +399,12 @@
     position: absolute;
     top: -5px;
     right: -8px;
-    background-color: #dc3545 !important;
-    color: white;
+    background-color: var(--ios-red) !important;
+    color: var(--text-light);
     font-size: 0.6rem;
     padding: 2px 5px;
     border-radius: 50%;
-    border: 2px solid #5a51e0; /* Le contour blanc qui "nettoie" l'UI */
+    border: 2px solid var(--rich-mahogany); /* Le contour blanc qui "nettoie" l'UI */
     min-width: 18px;
     height: 18px;
     display: flex;
@@ -304,39 +424,6 @@
         padding-bottom: 65px !important;
     }
 }
-
-/* ============================================================
-   9. GESTION DU message TOAST (Notifications)
-   ============================================================ */
-/* Animation de la barre de progression du message */
-/* Animation de la barre de progression du message */
-.toast {
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    backdrop-filter: blur(5px);
-}
-
-.toast-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.5);
-    width: 100%;
-    animation: toast-timer 5s linear forwards;
-}
-
-@keyframes toast-timer {
-    from { width: 100%; }
-    to { width: 0%; }
-}
-
-/* Couleurs personnalisées pour Django tags */
-.bg-error { background-color: #e74c3c !important; }
-.bg-success { background-color: #2ecc71 !important; }
-.bg-warning { background-color: #f1c40f !important; }
-.bg-info { background-color: #3498db !important; }
 
 /* ============================================================
    10. PARALAXE (Effet de profondeur sur les sections héroïques)
@@ -364,4 +451,243 @@
         background-attachment: scroll;
         height: 400px; /* On réduit un peu la hauteur sur mobile */
     }
+}
+
+/* ==========================================================================
+   PERSONNALISATION DE LA BANNIÈRE & DU BOUTON
+   ========================================================================== */
+
+/* 1. L'effet de fondu sur la limite basse de la bannière */
+.parallax-hero {
+  position: relative;
+  
+  /* L'astuce magique : On applique un masque de transparence sur les 10% du bas */
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  
+  /* Sécurité pour que le masque s'adapte bien à la taille */
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+/* ==========================================================================
+   BOUTON EXPLORER PREMIUM (Gradient & Shine Effect)
+   ========================================================================== */
+
+.parallax-hero .btn-primary {
+    /* Utilisation du dégradé linéaire de ton bouton login */
+    background: linear-gradient(135deg, var(--bronze) 0%, var(--vanilla-custard) 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+
+    /* Forme et espacement */
+    padding: 18px 45px !important;
+    border-radius: 100px !important; /* On garde l'effet capsule de l'image */
+    
+    /* Typographie */
+    font-family: var(--ios-font);
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    
+    /* Structure pour l'effet de balayage */
+    display: inline-flex !important;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden; /* Crucial pour cacher le reflet en dehors du bouton */
+    
+    /* Animation de base */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* L'effet de balayage lumineux (Shine) */
+.parallax-hero .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    /* Reflet blanc subtil */
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease-in-out;
+}
+
+/* --- ÉTATS AU SURVOL (HOVER) --- */
+
+.parallax-hero .btn-primary:hover {
+    transform: translateY(-3px);
+    /* Ombre portée plus diffuse au survol */
+    box-shadow: 0 10px 25px rgba(213, 137, 54, 0.4) !important;
+}
+
+/* Déclenchement du balayage lumineux */
+.parallax-hero .btn-primary:hover::before {
+    left: 100%;
+}
+
+/* Animation de la flèche */
+.parallax-hero .btn-primary i {
+    transition: transform 0.3s ease;
+}
+
+.parallax-hero .btn-primary:hover i {
+    transform: translateX(6px);
+}
+
+/* Effet au clic */
+.parallax-hero .btn-primary:active {
+    transform: translateY(-1px);
+    filter: brightness(0.9);
+}
+
+/* ==========================================================================
+   BOUTON CATALOGUE - EFFET REMPLISSAGE LATÉRAL (PROGRESSION)
+   ========================================================================== */
+
+.btn-outline-dark.btn-lg {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    border: 2px solid var(--text-primary) !important;
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    transition: color 0.4s ease, border-color 0.4s ease !important;
+    border-radius: 50px; /* On garde ton arrondi */
+    font-weight: 600;
+}
+
+/* Le calque de l'eau (remplissage) */
+.btn-outline-dark.btn-lg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%; /* Départ à vide */
+    height: 100%;
+    background: var(--action-color); /* Utilise ton Rust Brown ou Bronze */
+    z-index: -1;
+    
+    /* Inclinaison pour simuler le mouvement du liquide */
+    transform: skewX(15deg) translateX(-10%); 
+    transform-origin: left;
+    
+    transition: width 0.72s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* --- ÉTAT AU SURVOL (HOVER) --- */
+
+.btn-outline-dark.btn-lg:hover {
+    color: #ffffff !important; /* Le texte devient blanc pour le contraste */
+    border-color: var(--action-color) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-outline-dark.btn-lg:hover::before {
+    width: 120%; /* On dépasse un peu à cause du skew (l'inclinaison) */
+}
+
+/* Effet de clic pour la réactivité */
+.btn-outline-dark.btn-lg:active {
+    transform: scale(0.98);
+}
+
+/* ============================================================
+   11. STYLE DU DRAWER (MENU LATÉRAL MOBILE)
+   ============================================================ */
+
+/* Conteneur principal du Drawer */
+.drawer-body {
+    background-color: var(--bg-fallback) !important;
+    background-image: var(--bg-gradient) !important;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+/* Titres de sections (Informations, Mon Espace) */
+.drawer-body h6.text-muted {
+    color: var(--text-secondary) !important;
+    letter-spacing: 1px;
+    margin-top: 1.5rem;
+    opacity: 0.8;
+}
+
+/* Style des liens du Drawer */
+.drawer-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 4px 0;
+    border-radius: 12px;
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Effet au survol / clic */
+.drawer-link:hover, .drawer-link:active {
+    background-color: rgba(213, 137, 54, 0.1); /* Utilise la couleur Bronze avec transparence */
+    color: var(--action-color) !important;
+    transform: translateX(5px);
+}
+
+/* Style des icônes dans les liens */
+.drawer-link i {
+    width: 25px;
+    font-size: 1.1rem;
+    color: var(--bronze); /* Couleur chaude pour les icônes */
+    transition: color 0.3s ease;
+}
+
+/* Ajustement spécifique pour le thème Sombre (Aurora) */
+[data-theme="dark"] .drawer-link:hover {
+    background-color: rgba(13, 231, 172, 0.1); /* Lueur Aurora Teal */
+}
+
+[data-theme="dark"] .drawer-link i {
+    color: var(--aurora-teal);
+}
+
+/* Ligne de séparation */
+.drawer-body hr {
+    border-top: 1px solid var(--border-color) !important;
+    opacity: 0.2;
+    margin: 1rem 0;
+}
+
+/* Cas spécial : Dashboard Staff */
+.drawer-link.text-danger {
+    background-color: rgba(255, 59, 48, 0.05); /* Fond léger rouge iOS */
+    color: var(--ios-red) !important;
+}
+
+.drawer-link.text-danger i {
+    color: var(--ios-red) !important;
+}
+
+/* Bouton de connexion dans le drawer */
+.drawer-body .btn-primary {
+    background-color: var(--action-color) !important;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Réseaux Sociaux en bas */
+.drawer-body .fa-facebook {
+    color: var(--rich-mahogany) !important;
+    transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .drawer-body .fa-facebook {
+    color: var(--aurora-purple) !important;
+}
+
+.drawer-body .fa-facebook:hover {
+    transform: scale(1.2);
 }

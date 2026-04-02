@@ -15,6 +15,12 @@
   --aurora-teal: #0de7ac;     /* Vert-eau vif (pour le 'Glow') */
   --aurora-purple: #c433eb;   /* Violet vif (pour le 'Glow') */
   --nebula-indigo: #4a00ff;   /* Bleu-violet profond */
+
+  --ios-blue: #007AFF;
+  --ios-red: #FF3B30;
+  --ios-border: rgba(60, 60, 67, 0.2);
+  --ios-blur: blur(20px) saturate(180%);
+  --ios-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* ==========================================================================
@@ -88,46 +94,4 @@ body {
 
 a { color: var(--action-color); text-decoration: none; }
 a:hover { color: var(--action-hover); }
-/* ==========================================================================
-   PERSONNALISATION DE LA BANNIÈRE & DU BOUTON
-   ========================================================================== */
 
-/* 1. L'effet de fondu sur la limite basse de la bannière */
-.parallax-hero {
-  position: relative;
-  
-  /* L'astuce magique : On applique un masque de transparence sur les 10% du bas */
-  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-  
-  /* Sécurité pour que le masque s'adapte bien à la taille */
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-}
-
-/* 2. Forcer tes couleurs sur le bouton Bootstrap */
-.parallax-hero .btn-primary {
-  /* On applique ta variable d'action (Rust brown ou Bronze selon le thème) */
-  background-color: var(--action-color) !important;
-  border-color: var(--action-color) !important;
-  color: #ffffff !important; /* Force le texte en blanc pour le contraste */
-  
-  /* Améliorations UI/UX pour un look premium */
-  border-radius: 50px !important; /* Bords très arrondis (style pillule), très moderne */
-  font-weight: 600 !important;
-  letter-spacing: 0.5px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
-
-/* Effet au survol du bouton */
-.parallax-hero .btn-primary:hover {
-  background-color: var(--action-hover) !important;
-  border-color: var(--action-hover) !important;
-  transform: translateY(-3px); /* Le bouton se soulève légèrement */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important; /* L'ombre s'accentue */
-}
-
-/* Effet quand on clique sur le bouton */
-.parallax-hero .btn-primary:active {
-  transform: translateY(-1px);
-}
