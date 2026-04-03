@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'aboutus.apps.AboutusConfig',
     'dashboard.apps.DashboardConfig',
+    'web_site.apps.WebSiteConfig',
     'django.contrib.humanize',
 
     # AJOUTER DRF
@@ -84,6 +85,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 
                 'cart.context_processors.counter',
+                'web_site.context_processors.site_settings',
             ],
         },
     },

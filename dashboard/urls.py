@@ -20,4 +20,5 @@ urlpatterns = [
     path('clients/edit/<int:pk>/', views.edit_user, name='edit_user'),
     path('clients/update/<int:pk>/', views.update_user_inline, name='update_user_inline'),
     path('clients/delete/<int:pk>/', views.delete_user_inline, name='delete_user_inline'),
+	path('settings/', views.edit_site_settings, name='edit_site_settings'),
 ]
