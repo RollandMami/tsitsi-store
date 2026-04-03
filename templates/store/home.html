@@ -10,13 +10,25 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .parallax-hero {
+        background-image: url("{% if site_config.banner_desckop %}{{ site_config.banner_desckop.url }}{% else %}{% static 'img/hero_background.webp' %}{% endif %}");
+    }
+
+    /* Optionnel : On peut aussi gérer la bannière mobile configurée dans ton Dashboard ! */
+    @media (max-width: 767px) {
+        .parallax-hero {
+            background-image: url("{% if site_config.banner_mobile %}{{ site_config.banner_mobile.url }}{% else %}{% static 'img/hero_background.webp' %}{% endif %}");
+        }
+    }
+</style>
 <main>
     {# Hero Section avec effet Parallaxe CSS #}
     <div class="p-5 text-center bg-image parallax-hero">
         <div class="mask h-100 d-flex justify-content-center align-items-center" style="background-color: rgba(0, 0, 0, 0.5);">
             <div class="text-white px-3">
-                <h1 class="mb-3 display-3 fw-bold">Importation depuis la Chine</h1>
-                <h4 class="mb-4 fw-light">Le plaisir de découvrir, le bonheur de s'offrir</h4>
+                <h1 class="mb-3 display-3 fw-bold">{{site_config.banner_title}}</h1>
+                <h4 class="mb-4 fw-light">{{site_config.banner_sub_title}}</h4>
                 <a class="btn btn-primary btn-lg px-5 py-3 shadow" href="{% url 'store:catalogue' %}" role="button">
                     Explorer la Boutique <i class="fas fa-arrow-right ms-2"></i>
                 </a>
@@ -34,22 +46,22 @@
                 <div class="col-md-4">
                     <div class="p-3">
                         <i class="fas fa-hand-holding-usd fa-3x text-success mb-3"></i>
-                        <h5 class="fw-bold">Prix Locaux Justes</h5>
-                        <p class="text-muted">Des prix accessibles, soutenant directement les artisans locaux.</p>
+                        <h5 class="fw-bold">{{site_config.selling_point_1_title}}</h5>
+                        <p class="text-muted">{{site_config.selling_point_1_description}}</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="p-3">
                         <i class="fas fa-truck-fast fa-3x text-info mb-3"></i>
-                        <h5 class="fw-bold">Livraison Rapide</h5>
-                        <p class="text-muted">Partenariats avec des services locaux pour une réception en un temps record.</p>
+                        <h5 class="fw-bold">{{site_config.selling_point_2_title}}</h5>
+                        <p class="text-muted">{{site_config.selling_point_2_description}}</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="p-3">
                         <i class="fas fa-handshake fa-3x text-warning mb-3"></i>
-                        <h5 class="fw-bold">Qualité Garantie</h5>
-                        <p class="text-muted">Chaque article est inspecté soigneusement avant son expédition.</p>
+                        <h5 class="fw-bold">{{site_config.selling_point_3_title}}</h5>
+                        <p class="text-muted">{{site_config.selling_point_3_title}}</p>
                     </div>
                 </div>
             </div>
@@ -66,22 +78,22 @@
                     <div class="carousel-item active" data-bs-interval="3000">
                         <div class="p-4 shadow-sm mx-2 bg-light" style="border-radius: 15px;">
                             <i class="fas fa-hand-holding-usd fa-3x text-success mb-3"></i>
-                            <h5 class="fw-bold">Prix Locaux Justes</h5>
-                            <p class="text-muted mb-0">Soutenez directement les artisans.</p>
+                            <h5 class="fw-bold">{{site_config.selling_point_1_title}}</h5>
+                            <p class="text-muted">{{site_config.selling_point_1_description}}</p>
                         </div>
                     </div>
                     <div class="carousel-item" data-bs-interval="3000">
                         <div class="p-4 shadow-sm mx-2 bg-light" style="border-radius: 15px;">
                             <i class="fas fa-truck-fast fa-3x text-info mb-3"></i>
-                            <h5 class="fw-bold">Livraison Rapide</h5>
-                            <p class="text-muted mb-0">Réception rapide à domicile.</p>
+                            <h5 class="fw-bold">{{site_config.selling_point_2_title}}</h5>
+                            <p class="text-muted">{{site_config.selling_point_2_description}}</p>
                         </div>
                     </div>
                     <div class="carousel-item" data-bs-interval="3000">
                         <div class="p-4 shadow-sm mx-2 bg-light" style="border-radius: 15px;">
                             <i class="fas fa-handshake fa-3x text-warning mb-3"></i>
-                            <h5 class="fw-bold">Qualité Garantie</h5>
-                            <p class="text-muted mb-0">Inspection méticuleuse garantie.</p>
+                            <h5 class="fw-bold">{{site_config.selling_point_3_title}}</h5>
+                            <p class="text-muted">{{site_config.selling_point_3_title}}</p>
                         </div>
                     </div>
                 </div>

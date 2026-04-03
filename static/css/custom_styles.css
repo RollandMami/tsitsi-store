@@ -391,7 +391,6 @@ footer hr {
 /* Style pour l'effet parallaxe */
 .parallax-hero {
     /* On récupère le chemin de l'image via Django ou un chemin relatif */
-    background-image: url('../img/hero_background.webp'); 
     height: 500px;
     background-size: cover;
     background-position: center;

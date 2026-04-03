@@ -32,8 +32,6 @@
 
         .ts-db-nav-card.ts-active { background-color: var(--ts-blue) !important; border-color: var(--ts-blue) !important; }
         .ts-db-nav-card.ts-active i, .ts-db-nav-card.ts-active span { color: #fff !important; }
-        .ts-active { background-color: var(--ts-blue) !important; border-color: var(--ts-blue) !important; }
-        .ts-active i, .ts-active span { color: #fff !important; }
 
         /* Sidebar Desktop */
         #sidebarMenu .nav-link { color: #adb5bd; transition: 0.3s; margin-bottom: 5px; }

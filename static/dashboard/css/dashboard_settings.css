@@ -66,6 +66,10 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
+.form-grid.four-cols {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -86,6 +90,7 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="url"],
+input[type="number"],
 textarea {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--border-color);
@@ -158,6 +163,100 @@ input[type="file"] {
   font-size: 1rem;
 }
 
+/* ==========================================================================
+   NOUVEAUX AJOUTS : TIMELINE ET ÉQUIPE
+   ========================================================================== */
+
+/* --- Tableaux des Formsets (Timeline) --- */
+.formset-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.formset-table th {
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.formset-table td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.formset-table input,
+.formset-table textarea {
+  width: 100%;
+}
+
+/* --- Grille des Collaborateurs --- */
+.team-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.team-member-card-form {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.collaborator-img-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+.member-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.member-checks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.member-checks span.suppr {
+  color: var(--ios-red);
+}
+
+/* --- Boutons secondaires --- */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* --- Bouton d'action --- */
 .form-actions {
   position: sticky;
@@ -197,4 +296,49 @@ input[type="file"] {
 [data-theme="light"] input,
 [data-theme="light"] textarea {
   background: #ffffff;
+}
+[data-theme="light"] .team-member-card-form {
+  background: #f9f9f9;
+}
+
+/* --- Styles pour les arguments de vente --- */
+
+/* Force l'alignement sur 3 colonnes sur PC, et passe à 1 colonne sur mobile */
+.selling-point-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e3e6f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.selling-point-box:hover {
+    border-color: #4e73df;
+    background-color: #f1f3f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.selling-point-box h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4e73df;
+    border-bottom: 1px solid #e3e6f0;
+    padding-bottom: 0.5rem;
+}
+
+/* On utilise la grille de ton Dashboard pour aligner les 3 blocs */
+@media (min-width: 768px) {
+    .settings-card .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .settings-card .form-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
 }

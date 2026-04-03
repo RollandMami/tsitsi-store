@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import F, Q, Count, Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from web_site.models import SiteSettings
 
 # Local apps imports
 from .models import Product, Category, ProductImage, ReviewAndRating
@@ -16,6 +17,9 @@ def is_superuser_or_staff(user):
 
 # --- 0. ACCUEIL ---
 def home(request):
+    #On récupère l'instance unique des configurations du site
+    site_config = SiteSettings.get_settings()
+
     # On affiche uniquement les représentants principaux pour éviter les doublons
     products = Product.objects.filter( 
         is_main_representative=True
@@ -25,7 +29,8 @@ def home(request):
     context = {
         'products': products,
         'categories': categories,
-        'title': 'Bienvenue chez Tsitsi Store',
+        'site_config': site_config,
+        'title': site_config.site_name if site_config.site_name else 'Bienvenue chez E-commerce',
     }
     return render(request, 'store/home.html', context)
 

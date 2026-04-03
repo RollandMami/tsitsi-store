@@ -1,4 +1,4 @@
 from .models import SiteSettings
 
 def site_settings(request):
-    return {'site_settings': SiteSettings.get_settings()}
+    return {'site_config': SiteSettings.get_settings()}

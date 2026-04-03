@@ -12,55 +12,43 @@
 <div class="settings-container">
     <div class="settings-header">
         <h1>Configuration du Site</h1>
-        <p>Personnalisez l'identité visuelle et les informations de votre boutique.</p>
+        <p>Personnalisez l'identité visuelle, les informations, le parcours et l'équipe de votre boutique.</p>
     </div>
 
     <form method="POST" enctype="multipart/form-data" class="settings-form">
         {% csrf_token %}
 
         <div class="settings-card">
-            <div class="card-header">
-                <h2>Identité visuelle & Infos de base</h2>
-            </div>
+            <div class="card-header"><h2>Identité visuelle & Infos de base</h2></div>
             <div class="card-body">
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="site_name">Nom du site</label>
-                        <input type="text" id="site_name" name="site_name" value="{{ settings.site_name|default_if_none:'' }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="slogan">Slogan</label>
-                        <input type="text" id="slogan" name="slogan" value="{{ settings.slogan|default_if_none:'' }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="currency">Devise</label>
-                        <input type="text" id="currency" name="currency" value="{{ settings.currency|default_if_none:'' }}">
-                    </div>
+                    <div class="form-group"><label>Nom du site</label>{{ form.site_name }}</div>
+                    <div class="form-group"><label>Slogan</label>{{ form.slogan }}</div>
+                    <div class="form-group"><label>Devise</label>{{ form.currency }}</div>
                 </div>
 
-                <div class="form-group full-width">
-                    <label for="description">Description globale</label>
-                    <textarea id="description" name="description" rows="3">{{ settings.description|default_if_none:'' }}</textarea>
+                <div class="form-grid four-cols">
+                    <div class="form-group"><label>Année de début</label>{{ form.since_year }}</div>
+                    <div class="form-group"><label>Résumé service</label>{{ form.service_summary }}</div>
+                    <div class="form-group"><label>Public cible</label>{{ form.target_audience }}</div>
+                    <div class="form-group"><label>Objectif final</label>{{ form.main_objective }}</div>
                 </div>
+
+                <div class="form-group full-width"><label>Description globale</label>{{ form.description }}</div>
 
                 <div class="images-upload-grid">
                     <div class="form-group">
                         <label>Logo du site</label>
                         <div class="image-preview-wrapper">
-                            {% if settings.logo %}
-                                <img src="{{ settings.logo.url }}" alt="Logo actuel" class="preview-img">
-                            {% endif %}
-                            <input type="file" id="logo" name="logo" accept="image/*">
+                            {% if settings.logo %}<img src="{{ settings.logo.url }}" class="preview-img">{% endif %}
+                            {{ form.logo }}
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label>Photo de bannière</label>
-                        <div class="image-preview-wrapper banner-wrapper">
-                            {% if settings.banner %}
-                                <img src="{{ settings.banner.url }}" alt="Bannière actuelle" class="preview-img banner-img">
-                            {% endif %}
-                            <input type="file" id="banner" name="banner" accept="image/*">
+                        <label>Favicon (Icon)</label>
+                        <div class="image-preview-wrapper">
+                            {% if settings.icon %}<img src="{{ settings.icon.url }}" class="preview-img">{% endif %}
+                            {{ form.icon }}
                         </div>
                     </div>
                 </div>
@@ -68,98 +56,166 @@
         </div>
 
         <div class="settings-card">
-            <div class="card-header">
-                <h2>Coordonnées & Contact</h2>
-            </div>
+            <div class="card-header"><h2>Bannières Héros</h2></div>
             <div class="card-body">
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="email">E-mail de contact</label>
-                        <input type="email" id="email" name="email" value="{{ settings.email|default_if_none:'' }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Téléphone</label>
-                        <input type="text" id="phone" name="phone" value="{{ settings.phone|default_if_none:'' }}">
-                    </div>
+                    <div class="form-group"><label>Titre Banner</label>{{ form.banner_title }}</div>
+                    <div class="form-group"><label>Sous-titre Banner</label>{{ form.banner_sub_title }}</div>
                 </div>
-                <div class="form-group full-width">
-                    <label for="address">Adresse physique</label>
-                    <textarea id="address" name="address" rows="2">{{ settings.address|default_if_none:'' }}</textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-card">
-            <div class="card-header">
-                <h2>Arguments de vente (Section Photo 1)</h2>
-            </div>
-            <div class="card-body">
-                <div class="form-grid three-cols">
-                    <div class="selling-point-box">
-                        <h4>Point n°1</h4>
-                        <div class="form-group">
-                            <input type="text" name="selling_point_1_title" placeholder="Titre" value="{{ settings.selling_point_1_title|default_if_none:'' }}">
-                        </div>
-                        <div class="form-group">
-                            <textarea name="selling_point_1_description" rows="2" placeholder="Description">{{ settings.selling_point_1_description|default_if_none:'' }}</textarea>
+                <div class="images-upload-grid">
+                    <div class="form-group">
+                        <label>Bannière Desktop</label>
+                        <div class="image-preview-wrapper banner-wrapper">
+                            {% if settings.banner_desckop %}<img src="{{ settings.banner_desckop.url }}" class="preview-img banner-img">{% endif %}
+                            {{ form.banner_desckop }}
                         </div>
                     </div>
-                    <div class="selling-point-box">
-                        <h4>Point n°2</h4>
-                        <div class="form-group">
-                            <input type="text" name="selling_point_2_title" placeholder="Titre" value="{{ settings.selling_point_2_title|default_if_none:'' }}">
-                        </div>
-                        <div class="form-group">
-                            <textarea name="selling_point_2_description" rows="2" placeholder="Description">{{ settings.selling_point_2_description|default_if_none:'' }}</textarea>
-                        </div>
-                    </div>
-                    <div class="selling-point-box">
-                        <h4>Point n°3</h4>
-                        <div class="form-group">
-                            <input type="text" name="selling_point_3_title" placeholder="Titre" value="{{ settings.selling_point_3_title|default_if_none:'' }}">
-                        </div>
-                        <div class="form-group">
-                            <textarea name="selling_point_3_description" rows="2" placeholder="Description">{{ settings.selling_point_3_description|default_if_none:'' }}</textarea>
+                    <div class="form-group">
+                        <label>Bannière Mobile</label>
+                        <div class="image-preview-wrapper banner-wrapper">
+                            {% if settings.banner_mobile %}<img src="{{ settings.banner_mobile.url }}" class="preview-img banner-img">{% endif %}
+                            {{ form.banner_mobile }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="settings-card">
-            <div class="card-header">
-                <h2>Pied de page (Footer) & Réseaux Sociaux</h2>
-            </div>
+		<div class="settings-card">
+            <div class="card-header"><h2>Nos 3 Arguments de Vente</h2></div>
             <div class="card-body">
-                <div class="form-group full-width">
-                    <label for="footer_about">À propos (Footer)</label>
-                    <textarea id="footer_about" name="footer_about" rows="3">{{ settings.footer_about|default_if_none:'' }}</textarea>
-                </div>
+                <p class="text-muted small mb-3">Ces éléments apparaissent généralement sur la page d'accueil pour rassurer vos clients (ex: Livraison gratuite, Service client 24/7, etc.).</p>
                 
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="facebook_url">Lien Facebook</label>
-                        <input type="url" id="facebook_url" name="facebook_url" value="{{ settings.facebook_url|default_if_none:'' }}">
+                    <div class="selling-point-box p-3 border rounded mb-3">
+                        <h5 class="h6 text-primary mb-3">Argument n°1</h5>
+                        <div class="form-group mb-2">
+                            <label>Titre</label>
+                            {{ form.selling_point_1_title }}
+                        </div>
+                        <div class="form-group">
+                            <label>Description courte</label>
+                            {{ form.selling_point_1_description }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="instagram_url">Lien Instagram</label>
-                        <input type="url" id="instagram_url" name="instagram_url" value="{{ settings.instagram_url|default_if_none:'' }}">
+
+                    <div class="selling-point-box p-3 border rounded mb-3">
+                        <h5 class="h6 text-primary mb-3">Argument n°2</h5>
+                        <div class="form-group mb-2">
+                            <label>Titre</label>
+                            {{ form.selling_point_2_title }}
+                        </div>
+                        <div class="form-group">
+                            <label>Description courte</label>
+                            {{ form.selling_point_2_description }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="linkedin_url">Lien LinkedIn</label>
-                        <input type="url" id="linkedin_url" name="linkedin_url" value="{{ settings.linkedin_url|default_if_none:'' }}">
+
+                    <div class="selling-point-box p-3 border rounded mb-3">
+                        <h5 class="h6 text-primary mb-3">Argument n°3</h5>
+                        <div class="form-group mb-2">
+                            <label>Titre</label>
+                            {{ form.selling_point_3_title }}
+                        </div>
+                        <div class="form-group">
+                            <label>Description courte</label>
+                            {{ form.selling_point_3_description }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="copyright_text">Texte de Copyright</label>
-                        <input type="text" id="copyright_text" name="copyright_text" value="{{ settings.copyright_text|default_if_none:'' }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-header"><h2>Mission, Vision & Valeurs</h2></div>
+            <div class="card-body">
+                <div class="form-grid">
+                    <div class="form-group"><label>Notre Mission</label>{{ form.mission_description }}</div>
+                    <div class="form-group"><label>Notre Vision</label>{{ form.vision_description }}</div>
+                </div>
+                <div class="form-group full-width"><label>Nos Valeurs (Une par ligne)</label>{{ form.values_text }}</div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-header"><h2>Le Parcours (Timeline)</h2></div>
+            <div class="card-body">
+                {{ timeline_formset.management_form }}
+                <table class="formset-table">
+                    <thead><tr><th>Année</th><th>Titre</th><th>Description</th><th>Ordre</th><th>Suppr.</th></tr></thead>
+                    <tbody id="timeline-table-body">
+                        {% for t_form in timeline_formset %}
+                        <tr class="formset-row">
+                            {{ t_form.id }}
+                            <td>{{ t_form.year }}</td>
+                            <td>{{ t_form.title }}</td>
+                            <td>{{ t_form.description }}</td>
+                            <td>{{ t_form.order }}</td>
+                            <td>{{ t_form.DELETE }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="button" id="add-timeline-btn" class="btn-secondary">Ajouter une étape</button>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-header"><h2>L'Équipe / Collaborateurs</h2></div>
+            <div class="card-body">
+                {{ team_formset.management_form }}
+                <div class="team-grid-container" id="team-grid-body">
+                    {% for m_form in team_formset %}
+                    <div class="formset-row team-member-card-form">
+                        {{ m_form.id }}
+                        <div class="collaborator-img-wrapper">
+                            {% if m_form.instance.photo %}<img src="{{ m_form.instance.photo.url }}" class="preview-img">{% endif %}
+                            <label>Photo</label>{{ m_form.photo }}
+                        </div>
+                        <div class="member-inputs">
+                            <div class="form-grid">
+                                <div class="form-group">{{ m_form.first_name.label_tag }}{{ m_form.first_name }}</div>
+                                <div class="form-group">{{ m_form.last_name.label_tag }}{{ m_form.last_name }}</div>
+                            </div>
+                            <div class="form-group">{{ m_form.role.label_tag }}{{ m_form.role }}</div>
+                            <div class="form-group">{{ m_form.bio.label_tag }}{{ m_form.bio }}</div>
+                            <div class="member-checks">
+                                <span>Actif: {{ m_form.is_active }}</span>
+                                <span class="suppr">Suppr: {{ m_form.DELETE }}</span>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="add-member-btn" class="btn-secondary">Ajouter un collaborateur</button>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-header"><h2>Coordonnées & Pied de page</h2></div>
+            <div class="card-body">
+                <div class="form-grid">
+                    <div class="form-group"><label>E-mail</label>{{ form.email }}</div>
+                    <div class="form-group"><label>Téléphone</label>{{ form.phone }}</div>
+                </div>
+                <div class="form-group full-width"><label>Adresse</label>{{ form.address }}</div>
+                <div class="form-group full-width"><label>À propos (Footer)</label>{{ form.footer_about }}</div>
+                
+                <div class="form-grid">
+                    <div class="form-group"><label>Facebook</label>{{ form.facebook_url }}</div>
+                    <div class="form-group"><label>Instagram</label>{{ form.instagram_url }}</div>
+                    <div class="form-group"><label>Copyright</label>{{ form.copyright_text }}</div>
                 </div>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn-submit">Sauvegarder les modifications</button>
+            <button type="submit" class="btn-submit">Sauvegarder l'ensemble des modifications</button>
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'dashboard/js/dashboard_settings.js' %}" defer></script>
 {% endblock %}

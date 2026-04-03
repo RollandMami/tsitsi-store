@@ -1,35 +1,5 @@
 from django.db import models
 
-
-class Team(models.Model):
-    name = models.CharField(max_length=100, default='Équipe Principale')
-    mission = models.CharField(max_length=200, blank=True, null=True)
-
-    class Meta:
-        verbose_name = 'Équipe'
-        verbose_name_plural = 'Équipes'
-
-    def __str__(self):
-        return self.name
-
-
-class TeamMember(models.Model):
-    team = models.ForeignKey(Team, related_name='members', on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    role = models.CharField(max_length=150, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
-    photo = models.ImageField(upload_to='team/', blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        verbose_name = 'Collaborateur'
-        verbose_name_plural = 'Collaborateurs'
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-
 class SiteSettings(models.Model):
     # Identité de base
     site_name = models.CharField(max_length=100, default='Mon Site E-commerce')
@@ -73,8 +43,6 @@ class SiteSettings(models.Model):
     instagram_url = models.URLField(blank=True, null=True)
     linkedin_url = models.URLField(blank=True, null=True)
     copyright_text = models.CharField(max_length=200, blank=True, null=True)
-    
-    team = models.ForeignKey(Team, related_name='site_settings', on_delete=models.SET_NULL, blank=True, null=True)
 
     # Trois arguments de vente
     selling_point_1_title = models.CharField(max_length=100, blank=True, null=True)
@@ -118,3 +86,21 @@ class TimelineEvent(models.Model):
 
     def __str__(self):
         return f"{self.year} - {self.title}"
+    
+
+class TeamMember(models.Model):
+    # ICI : On lie directement le membre aux paramètres du site !
+    site_settings = models.ForeignKey(SiteSettings, related_name='members', on_delete=models.CASCADE, null=True, blank=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=150, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    photo = models.ImageField(upload_to='team/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Collaborateur'
+        verbose_name_plural = 'Collaborateurs'
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

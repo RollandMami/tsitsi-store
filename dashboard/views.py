@@ -13,6 +13,7 @@ from store.models import Product, Category
 from orders.models import Order, OrderItem
 from users.models import CustomUser
 from web_site.models import SiteSettings
+from web_site.forms import *
 
 # --- SÉCURITÉ ---
 def is_admin(user):
@@ -288,44 +289,35 @@ def delete_user_inline(request, pk):
 
 @user_passes_test(is_admin)
 def edit_site_settings(request):
-    # Grâce à la méthode qu'on a vu dans ton modèle, on récupère l'instance unique (ID=1)
     settings = SiteSettings.get_settings()
     
     if request.method == 'POST':
-        # On récupère les textes
-        settings.site_name = request.POST.get('site_name')
-        settings.slogan = request.POST.get('slogan')
-        settings.description = request.POST.get('description')
-        settings.email = request.POST.get('email')
-        settings.phone = request.POST.get('phone')
-        settings.address = request.POST.get('address')
-        settings.currency = request.POST.get('currency')
-        
-        # Section Footer
-        settings.footer_about = request.POST.get('footer_about')
-        settings.footer_link_1_label = request.POST.get('footer_link_1_label')
-        settings.footer_link_1_url = request.POST.get('footer_link_1_url')
-        settings.facebook_url = request.POST.get('facebook_url')
-        settings.instagram_url = request.POST.get('instagram_url')
-        settings.linkedin_url = request.POST.get('linkedin_url')
-        settings.copyright_text = request.POST.get('copyright_text')
-        
-        # Section Selling Points
-        settings.selling_point_1_title = request.POST.get('selling_point_1_title')
-        settings.selling_point_1_description = request.POST.get('selling_point_1_description')
-        settings.selling_point_2_title = request.POST.get('selling_point_2_title')
-        settings.selling_point_2_description = request.POST.get('selling_point_2_description')
-        settings.selling_point_3_title = request.POST.get('selling_point_3_title')
-        settings.selling_point_3_description = request.POST.get('selling_point_3_description')
+        form = SiteSettingsForm(request.POST, request.FILES, instance=settings)
+        timeline_formset = TimelineFormSet(request.POST, instance=settings)
+        team_formset = TeamFormSet(request.POST, request.FILES, instance=settings)
 
-        # GESTION DES IMAGES (C'est là que le multipart/form-data joue !)
-        if 'logo' in request.FILES:
-            settings.logo = request.FILES['logo']
-        if 'banner' in request.FILES:
-            settings.banner = request.FILES['banner']
-
-        settings.save()
-        messages.success(request, "Les paramètres du site ont été mis à jour avec succès !")
-        return redirect('dashboard:edit_site_settings') # Remplace par le nom de ta route
+        is_form_valid = form.is_valid()
+        is_timeline_valid = timeline_formset.is_valid()
+        is_team_valid = team_formset.is_valid()
         
-    return render(request, 'dashboard/site_config.html', {'settings': settings, 'title': 'Configuration Site'})
+        if is_form_valid and is_timeline_valid and is_team_valid:
+            form.save()
+            timeline_formset.save()
+            team_formset.save()
+            messages.success(request, "Toutes les configurations et le parcours ont été mis à jour !")
+            return redirect('dashboard:edit_site_settings')
+        else:
+            messages.error(request, "Une erreur s'est produite. Veuillez vérifier les champs.")
+    else:
+        form = SiteSettingsForm(instance=settings)
+        timeline_formset = TimelineFormSet(instance=settings)
+        team_formset = TeamFormSet(instance=settings)
+        
+    context = {
+        'form': form,
+        'timeline_formset': timeline_formset,
+        'team_formset': team_formset,
+        'settings': settings,
+        'title': 'Configuration du Site'
+    }
+    return render(request, 'dashboard/site_config.html', context)

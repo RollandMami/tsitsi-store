@@ -7,7 +7,7 @@ from .models import SiteSettings, TimelineEvent, TeamMember
 class SiteSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
-        # On liste tous les champs modifiables (Exclut l'équipe globale liée pour l'instant)
+        # On liste absolument tous les champs modifiables
         fields = [
             'site_name', 'slogan', 'logo', 'icon', 
             'banner_title', 'banner_sub_title', 'banner_desckop', 'banner_mobile',
@@ -22,25 +22,26 @@ class SiteSettingsForm(forms.ModelForm):
             'selling_point_3_title', 'selling_point_3_description',
         ]
         
-        # On utilise des widgets pour forcer l'affichage de textareas au lieu de simples inputs
+        # On utilise des widgets HTML pour forcer l'affichage propre des zones de texte
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
+            'description': forms.Textarea(attrs={'rows': 3}),
             'footer_about': forms.Textarea(attrs={'rows': 3}),
             'address': forms.Textarea(attrs={'rows': 2}),
-            'values_text': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Transparence totale\nInnovation constante\nOrientation Client'}),
+            'values_text': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Ex:\nTransparence totale\nInnovation constante'}),
+            'mission_description': forms.Textarea(attrs={'rows': 3}),
+            'vision_description': forms.Textarea(attrs={'rows': 3}),
             'banner_title': forms.Textarea(attrs={'rows': 2}),
             'banner_sub_title': forms.Textarea(attrs={'rows': 2}),
         }
 
 
 # 2. Formset pour le Parcours (Timeline)
-# Permet d'ajouter/modifier/supprimer plusieurs étapes à la fois
 TimelineFormSet = inlineformset_factory(
     SiteSettings, 
     TimelineEvent,
     fields=['year', 'title', 'description', 'order'],
-    extra=1,            # Nombre de formulaires vides à afficher pour les ajouts
-    can_delete=True,    # Permet de cocher une case pour supprimer l'étape
+    extra=1,            # Un formulaire vide prêt pour l'ajout
+    can_delete=True,    # Case à cocher pour supprimer
     widgets={
         'description': forms.Textarea(attrs={'rows': 2}),
         'year': forms.TextInput(attrs={'placeholder': 'Ex: 2023'}),
@@ -48,13 +49,14 @@ TimelineFormSet = inlineformset_factory(
 )
 
 
-# 3. Formset pour l'Équipe
-# Permet d'ajouter/modifier/supprimer les collaborateurs
-TeamMemberFormSet = inlineformset_factory(
-    SiteSettings,
-    # Attention : Ton modèle TeamMember actuel est lié à "Team" et non directement à "SiteSettings".
-    # Pour que l'inlineformset marche directement depuis la page de config du site,
-    # il faudrait soit lier TeamMember directement à SiteSettings, soit gérer Team séparément.
-    # On va utiliser une astuce dans la vue ou adapter si besoin. 
-    # Pour l'instant, on l'associe à l'instance de Team que possède SiteSettings.
+# 3. Formset pour l'Équipe (Robustesse maximale)
+TeamFormSet = inlineformset_factory(
+    SiteSettings, 
+    TeamMember,
+    fields=['first_name', 'last_name', 'role', 'bio', 'photo', 'is_active'],
+    extra=1, 
+    can_delete=True,
+    widgets={
+        'bio': forms.Textarea(attrs={'rows': 2}),
+    }
 )
