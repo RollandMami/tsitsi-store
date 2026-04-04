@@ -9,12 +9,12 @@ Détails de la Commande:
 Produit | Quantité | Sous-Total
 ------------------------------------------
 {% for item in order_items %}
-{{ item.product.product_name }} | {{ item.quantity }} | {{ item.sub_total|floatformat:2 }} MGA
+{{ item.product.product_name }} | {{ item.quantity }} | {{ item.sub_total|floatformat:2 }} {{site_config.currency}}
 {% endfor %}
 ------------------------------------------
-Sous-Total: {{ sub_total|floatformat:2 }} MGA
-Taxes: {{ order.tax|floatformat:2 }} MGA
-TOTAL PAYÉ: {{ order.order_total|floatformat:2 }} MGA
+Sous-Total: {{ sub_total|floatformat:2 }} {{site_config.currency}}
+Taxes: {{ order.tax|floatformat:2 }} {{site_config.currency}}
+TOTAL PAYÉ: {{ order.order_total|floatformat:2 }} {{site_config.currency}}
 
 Adresse de Livraison:
 {{ order.full_name }}

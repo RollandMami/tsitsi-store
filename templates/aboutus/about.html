@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}About Us - Tsitsi Store{% endblock %}
+{% block title %}About Us - {{site_config.site_name}}{% endblock %}
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'aboutus/css/styles.css' %}">
@@ -13,7 +13,7 @@
             <p class="text-primary fw-bold mb-2">NOTRE HISTOIRE COMMENCE ICI</p>
             <h1 class="display-3 fw-bolder mb-3">Qui Sommes-Nous ?</h1>
             <p class="lead text-muted mx-auto" style="max-width: 800px;">
-                Chez **Tsitsi Store**, nous croyons que la simplicité est la clé de la réussite. Depuis [Année], notre mission est de [résumer votre service/produit] pour aider [votre public cible] à atteindre [leur objectif].
+                Chez **{{site_config.site_name}}**, nous croyons que la simplicité est la clé de la réussite. Depuis {{site_config.since_year}}, notre mission est de {{site_config.service_summary}} pour aider {{site_config.target_audience}} à atteindre {{site_config.main_objective}}.
             </p>
             <a href="#mission" class="btn btn-primary btn-lg mt-3">Découvrez Nos Valeurs <i class="fas fa-chevron-down ms-2"></i></a>
         </div>
@@ -26,7 +26,7 @@
                     <div class="card h-100 p-4 mission-vision-card shadow-sm border-primary">
                         <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
                         <h3 class="h5 card-title fw-bold">Notre Mission</h3>
-                        <p class="card-text">Nous fournissons des solutions numériques **accessibles et intuitives** pour les PME, éliminant les barrières technologiques.</p>
+                        <p class="card-text">{{site_config.mission_description}}</p>
                     </div>
                 </div>
 
@@ -34,7 +34,7 @@
                     <div class="card h-100 p-4 mission-vision-card shadow-sm border-success">
                         <i class="fas fa-rocket fa-3x text-success mb-3"></i>
                         <h3 class="h5 card-title fw-bold">Notre Vision</h3>
-                        <p class="card-text">Devenir la référence mondiale pour l'autonomisation digitale des entrepreneurs d'ici 2030.</p>
+                        <p class="card-text">{{site_config.vision_description}}</p>
                     </div>
                 </div>
 
@@ -43,9 +43,17 @@
                         <i class="fas fa-handshake fa-3x text-info mb-3"></i>
                         <h3 class="h5 card-title fw-bold">Nos Valeurs</h3>
                         <ul class="list-unstyled text-start mx-auto" style="max-width: fit-content;">
-                            <li><i class="fas fa-check-circle text-primary me-2"></i> Transparence totale</li>
-                            <li><i class="fas fa-check-circle text-primary me-2"></i> Innovation constante</li>
-                            <li><i class="fas fa-check-circle text-primary me-2"></i> Orientation Client</li>
+                            {% if site_config.get_values_list %}
+                                {# On boucle sur la liste générée par la fonction de ton modèle #}
+                                {% for valeur in site_config.get_values_list %}
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i> {{ valeur }}</li>
+                                {% endfor %}
+                            {% else %}
+                                {# Fallback : Ce qui s'affiche si rien n'est écrit dans le Dashboard #}
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> Default: Transparence totale</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> Default: Innovation constante</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> Default: Orientation Client</li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -63,14 +71,14 @@
                         <div class="card p-4 mx-2 shadow-sm border-primary" style="border-radius: 15px; min-height: 250px;">
                             <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
                             <h3 class="h5 card-title fw-bold">Notre Mission</h3>
-                            <p class="card-text text-muted">Nous fournissons des solutions numériques **accessibles et intuitives** pour les PME.</p>
+                            <p class="card-text text-muted">{{site_config.mission_description}}</p>
                         </div>
                     </div>
                     <div class="carousel-item" data-bs-interval="4000">
                         <div class="card p-4 mx-2 shadow-sm border-success" style="border-radius: 15px; min-height: 250px;">
                             <i class="fas fa-rocket fa-3x text-success mb-3"></i>
                             <h3 class="h5 card-title fw-bold">Notre Vision</h3>
-                            <p class="card-text text-muted">Devenir la référence mondiale pour l'autonomisation digitale des entrepreneurs d'ici 2030.</p>
+                            <p class="card-text text-muted">{{site_config.vision_description}}</p>
                         </div>
                     </div>
                     <div class="carousel-item" data-bs-interval="4000">
@@ -78,9 +86,17 @@
                             <i class="fas fa-handshake fa-3x text-info mb-3"></i>
                             <h3 class="h5 card-title fw-bold">Nos Valeurs</h3>
                             <ul class="list-unstyled text-start mx-auto mb-0" style="max-width: fit-content;">
-                                <li><i class="fas fa-check-circle text-primary me-2"></i> Transparence</li>
-                                <li><i class="fas fa-check-circle text-primary me-2"></i> Innovation</li>
-                                <li><i class="fas fa-check-circle text-primary me-2"></i> Client d'abord</li>
+                                {% if site_config.get_values_list %}
+                                    {# On boucle sur la liste générée par la fonction de ton modèle #}
+                                    {% for valeur in site_config.get_values_list %}
+                                        <li><i class="fas fa-check-circle text-primary me-2"></i> {{ valeur }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {# Fallback : Ce qui s'affiche si rien n'est écrit dans le Dashboard #}
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i> Default: Transparence totale</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i> Default: Innovation constante</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i> Default: Orientation Client</li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>
@@ -94,21 +110,23 @@
             <h2 class="text-center mb-5 fw-bold">Notre Parcours</h2>
             <div class="row">
                 <div class="col-lg-10 mx-auto">
-                    <div class="p-4 border-start border-primary border-4 mb-4 bg-white shadow-sm">
-                        <span class="badge bg-primary mb-2">2018</span>
-                        <h4 class="h5">La Fondation</h4>
-                        <p class="text-muted mb-0">Lancement du projet par [Nom du fondateur], visant à créer une plateforme e-commerce simple.</p>
-                    </div>
-                    <div class="p-4 border-start border-primary border-4 mb-4 bg-white shadow-sm">
-                        <span class="badge bg-primary mb-2">2020</span>
-                        <h4 class="h5">Lancement du Tsitsi Store</h4>
-                        <p class="text-muted mb-0">Sortie de la version beta et acquisition des 500 premiers clients.</p>
-                    </div>
-                    <div class="p-4 border-start border-primary border-4 bg-white shadow-sm">
-                        <span class="badge bg-primary mb-2">2023</span>
-                        <h4 class="h5">Partenariat Clé</h4>
-                        <p class="text-muted mb-0">Signature d'un partenariat majeur avec [Nom du Partenaire] pour étendre nos offres.</p>
-                    </div>
+                    {% if site_config.events.all %}
+                        {# On boucle sur les événements triés grâce au ordering défini dans ton modèle #}
+                        {% for event in site_config.events.all %}
+                            <div class="p-4 border-start border-primary border-4 mb-4 bg-white shadow-sm">
+                                <span class="badge bg-primary mb-2">{{ event.year }}</span>
+                                <h4 class="h5">{{ event.title }}</h4>
+                                <p class="text-muted mb-0">{{ event.description }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        {# Fallback : Ce qui s'affiche si aucune étape n'est créée dans le Dashboard #}
+                        <div class="p-4 border-start border-primary border-4 mb-4 bg-white shadow-sm">
+                            <span class="badge bg-primary mb-2">2018</span>
+                            <h4 class="h5">La Fondation</h4>
+                            <p class="text-muted mb-0">Lancement du projet par [Nom du fondateur], visant à créer une plateforme e-commerce simple.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -118,32 +136,42 @@
         <div class="container">
             <h2 class="text-center mb-5 fw-bold">Rencontrez l'Équipe Derrière Tsitsi Store</h2>
             <div class="row text-center g-4">
-                
-                <div class="col-md-4">
-                    <div class="team-member">
-                        <img src="{% static 'img/photo_ceo.jpg' %}" class="rounded-circle mb-3 shadow" alt="Photo CEO" width="150" height="150">
-                        <h5 class="fw-bold">Mampionona Norbert ANDRIANTSIORY</h5>
-                        <p class="text-primary mb-1">CEO & Fondateur</p>
-                        <p class="small text-muted">Le cerveau derrière la vision, s'assurant que Tsitsi Store reste innovant.</p>
-                    </div>
-                </div>
+                <div class="row text-center justify-content-center">
+                    {% if site_config.members.all %}
+                        
+                        {# On boucle sur les membres et on filtre pour n'afficher que les actifs #}
+                        {% for member in site_config.members.all %}
+                            {% if member.is_active %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="team-member">
+                                        
+                                        {# Gestion de l'image avec fallback si aucune photo n'est téléversée #}
+                                        {% if member.photo %}
+                                            <img src="{{ member.photo.url }}" class="rounded-circle mb-3 shadow object-fit-cover" alt="Photo {{ member.first_name }}" width="150" height="150">
+                                        {% else %}
+                                            <img src="{% static 'img/photo_support.jpg' %}" class="rounded-circle mb-3 shadow object-fit-cover" alt="Photo par défaut" width="150" height="150">
+                                        {% endif %}
+                                        
+                                        <h5 class="fw-bold">{{ member.first_name }} {{ member.last_name }}</h5>
+                                        <p class="text-primary mb-1">{{ member.role|default:"Collaborateur" }}</p>
+                                        <p class="small text-muted">{{ member.bio|default:"" }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
 
-                <div class="col-md-4">
-                    <div class="team-member">
-                        <img src="{% static 'img/photo_tech.jpg' %}" class="rounded-circle mb-3 shadow" alt="Photo Technique" width="150" height="150">
-                        <h5 class="fw-bold">Maminirina Rolland ANDRIANAVALONA</h5>
-                        <p class="text-primary mb-1">Responsable Technique</p>
-                        <p class="small text-muted">Garantit la performance et la sécurité de notre plateforme.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="team-member">
-                        <img src="{% static 'img/photo_support.jpg' %}" class="rounded-circle mb-3 shadow" alt="Photo Support" width="150" height="150">
-                        <h5 class="fw-bold">Prénom Nom</h5>
-                        <p class="text-primary mb-1">Chef du Support Client</p>
-                        <p class="small text-muted">Notre porte-parole de l'utilisateur, au service de la satisfaction.</p>
-                    </div>
+                    {% else %}
+                        
+                        {# Fallback : Ce qui s'affiche si aucun membre n'est créé dans le Dashboard #}
+                        <div class="col-md-4">
+                            <div class="team-member">
+                                <img src="{% static 'img/photo_ceo.jpg' %}" class="rounded-circle mb-3 shadow" alt="Photo CEO" width="150" height="150">
+                                <h5 class="fw-bold">Mampionona Norbert ANDRIANTSIORY</h5>
+                                <p class="text-primary mb-1">CEO & Fondateur</p>
+                                <p class="small text-muted">Le cerveau derrière la vision, s'assurant que Tsitsi Store reste innovant.</p>
+                            </div>
+                        </div>
+                        {% endif %}
                 </div>
 
             </div>
@@ -172,7 +200,7 @@
 
     <section class="py-5 text-center">
         <div class="container">
-            <h2 class="fw-bold">Prêt à Rejoindre l'Aventure Tsitsi Store ?</h2>
+            <h2 class="fw-bold">Prêt à Rejoindre l'Aventure {{site_config.site_name}} ?</h2>
             <p class="lead mb-4">Contactez-nous pour découvrir comment nous pouvons optimiser votre activité.</p>
             <a href="#" class="btn btn-primary btn-lg"><i class="fas fa-arrow-right me-2"></i> Démarrer Maintenant</a>
         </div>

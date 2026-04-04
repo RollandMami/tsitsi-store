@@ -18,6 +18,7 @@ dist/
 # Fichiers de Médias (images uploadées, etc.)
 # Créez ce dossier MEDIA_ROOT si ce n'est pas déjà fait.
 /media/
+/static/img/
 /static_files/
 
 #Environnement Virtuel

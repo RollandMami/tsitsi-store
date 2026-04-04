@@ -54,7 +54,7 @@
                                         </span>
                                     </td>
 
-                                    <td class="text-center">{{ item.product.price }} MGA</td>
+                                    <td class="text-center">{{ item.product.price }} {{site_config.currency}}</td>
                                     
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm border rounded" role="group">
@@ -68,7 +68,7 @@
                                         </div>
                                     </td>
 
-                                    <td class="text-end fw-bold">{{ item.sub_total|floatformat:2 }} MGA</td>
+                                    <td class="text-end fw-bold">{{ item.sub_total|floatformat:2 }} {{site_config.currency}}</td>
                                     
                                     <td class="text-center">
                                         <a href="{% url 'cart:full_remove' item.product.id item.id %}" class="btn btn-outline-danger btn-sm border-0" title="Supprimer l'article">
@@ -97,7 +97,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
                         <span>Sous-Total ({{ counter }} art.):</span>
-                        <span class="fw-bold">{{ total|floatformat:2 }} MGA</span>
+                        <span class="fw-bold">{{ total|floatformat:2 }} {{site_config.currency}}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <span>Livraison:</span>
@@ -106,12 +106,19 @@
                     <hr>
                     <div class="d-flex justify-content-between mb-4">
                         <span class="h5 fw-bold text-success">Total (TTC):</span>
-                        <span class="h4 fw-bold text-success">{{ total|floatformat:2 }} MGA</span>
+                        <span class="h4 fw-bold text-success">{{ total|floatformat:2 }} {{site_config.currency}}</span>
                     </div>
                     
-                    <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-lg w-100 shadow-sm mb-3">
-                        <i class="fas fa-check-circle me-2"></i> Procéder au Paiement
-                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-lg w-100 shadow-sm mb-3">
+                            <i class="fas fa-check-circle me-2"></i> Procéder au Paiement
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:login' %}?next={% url 'orders:checkout' %}" class="btn btn-warning btn-lg w-100 shadow-sm mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i> Connectez-vous pour payer
+                        </a>
+                        <p class="text-muted small text-center">Vous devez avoir un compte pour finaliser votre commande.</p>
+                    {% endif %}
                     
                     <div class="text-center">
                         <img src="{% static 'images/payments.png' %}" alt="Paiements sécurisés" class="img-fluid opacity-75" style="max-height: 30px;">

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Dashboard | Tsitsi Store{% endblock %}
+{% block title %}Dashboard | {{site_config.site_name}}{% endblock %}
 
 {% comment %} Nettoyage de la navigation boutique standard {% endcomment %}
 {% block header_nav %}{% endblock %}
 
 {% block extra_head %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'dashboard/css/base_dashboard.css' %}">
     {% block extra_css %}{% endblock %}
@@ -59,7 +59,7 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
                 <h1 class="h2 fw-bold text-dark mb-0">
-                    <i class="fas fa-tachometer-alt me-2 text-primary"></i> Tsitsi Store
+                    <i class="fas fa-tachometer-alt me-2 text-primary"></i> {{site_config.site_name}}
                 </h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     {% block period_selector %}{% endblock %}

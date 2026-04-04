@@ -55,7 +55,7 @@
             </div>
 
             <h2 class="mb-4" style="color: #157347; font-weight: 800;">
-                {{ product.price|floatformat:0|intcomma }} <small>MGA</small>
+                {{ product.price|floatformat:0|intcomma }} <small>{{site_config.currency}}</small>
             </h2>
 
             {# --- SECTION VARIANTES (Sortie du bloc stock pour rester visible) --- #}
@@ -77,7 +77,7 @@
                                     <div class="badge bg-danger mt-1">Épuisé</div>
                                 {% endif %}
                             </div>
-                            <div class="variant-price-tag">{{ product.price|floatformat:0|intcomma }} MGA</div>
+                            <div class="variant-price-tag">{{ product.price|floatformat:0|intcomma }} {{site_config.currency}}</div>
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@
                                     <small class="text-muted">Disponible</small>
                                 {% endif %}
                             </div>
-                            <div class="variant-price-tag text-primary">{{ variant.price|floatformat:0|intcomma }} MGA</div>
+                            <div class="variant-price-tag text-primary">{{ variant.price|floatformat:0|intcomma }} {{site_config.currency}}</div>
                         </a>
                     </div>
                     {% endfor %}

@@ -3,7 +3,7 @@
 {% load humanize %}
 
 {% block title %}
-    {% if current_category %}{{ current_category.name }}{% else %}Catalogue{% endif %} - Tsitsi Store
+    {% if current_category %}{{ current_category.name }}{% else %}Catalogue{% endif %} - {{site_config.site_name}}
 {% endblock %}
 
 {% block extra_head %}

@@ -13,6 +13,7 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 import datetime
+from django.contrib.auth.decorators import login_required
 
 # --- FONCTION D'ENVOI D'EMAIL ---
 def send_order_confirmation_email(order):
@@ -71,7 +72,7 @@ def calculate_totals(request):
     return sub_total, tax, grand_total, cart_items
 
 # --- VUES ---
-
+@login_required(login_url='users:login')
 def checkout(request):
     """Affiche le formulaire de paiement et le récapitulatif."""
     sub_total, tax, grand_total, cart_items = calculate_totals(request)

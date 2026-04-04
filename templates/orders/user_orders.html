@@ -34,7 +34,7 @@
                             <tr>
                                 <td class="fw-bold">{{ order.order_number }}</td>
                                 <td>{{ order.created|date:"d F Y" }}</td>
-                                <td class="text-success fw-bold">{{ order.order_total|floatformat:2 }} MGA</td>
+                                <td class="text-success fw-bold">{{ order.order_total|floatformat:2 }} {{site_config.currency}}</td>
                                 <td><span class="badge bg-secondary">{{ order.get_status_display }}</span></td>
                                 <td>
                                     <a href="{% url 'orders:order_detail' order.order_number %}" class="btn btn-sm btn-info text-white">

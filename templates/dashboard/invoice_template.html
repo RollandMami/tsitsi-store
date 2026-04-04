@@ -15,7 +15,7 @@
                         alt="Logo" 
                         class="rounded-circle me-1" 
                         style="width: 40px; height: 40px; object-fit: cover; vertical-align: middle;">
-                    TSITSI STORE
+                    {{site_config.site_name|upper}}
                 </div>
                 <p>Plateforme de Vente en Ligne<br>Antananarivo, Madagascar</p>
             </td>
@@ -90,7 +90,7 @@
 
     <div class="footer">
         <p><strong>Merci de votre confiance !</strong></p>
-        <p>TSITSI STORE - Antananarivo - Madagascar</p>
+        <p>{{site_config.site_name|upper}} - Antananarivo - Madagascar</p>
         <p>Document généré le {{ now|date:"d/m/Y H:i" }}</p>
     </div>
 </body>

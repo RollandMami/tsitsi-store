@@ -94,7 +94,7 @@ class ProductAdmin(admin.ModelAdmin):
     thumbnail.short_description = 'Photo'
 
     def price_formatted(self, obj):
-        return format_html('<span style="font-weight:bold;">{:,.0f} MGA</span>'.format(obj.price).replace(',', ' '))
+        return format_html('<span style="font-weight:bold;">{:,.0f} {{site_config.currency}}</span>'.format(obj.price).replace(',', ' '))
     price_formatted.short_description = 'Prix'
 
     def colored_stock(self, obj):

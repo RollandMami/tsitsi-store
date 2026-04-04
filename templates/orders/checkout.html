@@ -70,9 +70,9 @@
                             <li class="list-group-item d-flex justify-content-between lh-sm">
                                 <div>
                                     <h6 class="my-0">{{ item.product.product_name }}</h6>
-                                    <small class="text-muted">{{ item.quantity }} x {{ item.product.price }} MGA</small>
+                                    <small class="text-muted">{{ item.quantity }} x {{ item.product.price }} {{site_config.currency}}</small>
                                 </div>
-                                <span class="text-muted fw-bold">{{ item.sub_total|floatformat:2 }} MGA</span>
+                                <span class="text-muted fw-bold">{{ item.sub_total|floatformat:2 }} {{site_config.currency}}</span>
                             </li>
                             {% endfor %}
                         </ul>
@@ -80,15 +80,15 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Sous-Total</span>
-                                <strong>{{ sub_total|floatformat:2 }} MGA</strong>
+                                <strong>{{ sub_total|floatformat:2 }} {{site_config.currency}}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Taxes (TVA)</span>
-                                <strong>+ {{ tax|floatformat:2 }} MGA</strong>
+                                <strong>+ {{ tax|floatformat:2 }} {{site_config.currency}}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between text-success fw-bolder h4">
                                 <span>Total Final (TTC)</span>
-                                <strong>{{ grand_total|floatformat:2 }} MGA</strong>
+                                <strong>{{ grand_total|floatformat:2 }} {{site_config.currency}}</strong>
                             </li>
                         </ul>
                     </div>

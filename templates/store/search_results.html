@@ -62,7 +62,7 @@
                             
                             <div class="mt-auto">
                                 <div class="price text-danger fw-bold mb-0">
-                                    {{ product.price|floatformat:0|intcomma }} <small>MGA</small>
+                                    {{ product.price|floatformat:0|intcomma }} <small>{{site_config.currency}}</small>
                                 </div>
                                 {% if product.get_average_rating %}
                                 <div class="text-warning small mt-1">
