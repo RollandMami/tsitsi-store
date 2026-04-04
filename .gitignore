@@ -1,6 +1,7 @@
 #base de donne
 *.sqlite3
 db.sqlite3
+.gitignore
 
 # Fichiers de code compilé
 *.pyc
