@@ -30,7 +30,7 @@ def home(request):
         'products': products,
         'categories': categories,
         'site_config': site_config,
-        'title': site_config.site_name if site_config.site_name else 'Bienvenue chez E-commerce',
+        'title': 'Acceuil' if site_config.site_name else 'Bienvenue chez E-commerce',
     }
     return render(request, 'store/home.html', context)
 
